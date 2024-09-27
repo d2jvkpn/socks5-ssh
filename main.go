@@ -12,6 +12,7 @@ import (
 	"github.com/armon/go-socks5"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh"
+	"golang.org/x/crypto/ssh/knownhosts"
 )
 
 func main() {
@@ -107,7 +108,8 @@ func main() {
 		"address", addr,
 		"debug", debug,
 		"network", network,
-		"auth", proxyConfig.Socks5User != "",
+		"sshAuth", proxyConfig.SSH_AuthMethod(),
+		"socks5WithAuth", proxyConfig.Socks5User != "",
 	)
 
 	if err = socks5Server.Serve(listener); err != nil {
@@ -121,7 +123,8 @@ type ProxyConfig struct {
 	SSH_User       string `mapstructure:"ssh_user"`
 	SSH_Password   string `mapstructure:"ssh_password"`
 	SSH_PrivateKey string `mapstructure:"ssh_private_key"`
-	SSH_PublicKey  string `mapstructure:"ssh_public_key"`
+	SSH_KnownHosts string `mapstructure:"ssh_known_hosts"`
+
 	Socks5User     string `mapstructure:"socks5_user"`
 	Socks5Password string `mapstructure:"socks5_password"`
 }
@@ -155,7 +158,7 @@ func LoadProxyConfig(fp string, keys ...string) (config *ProxyConfig, err error)
 
 	switch {
 	case config.SSH_Password != "":
-	case config.SSH_PrivateKey != "" && config.SSH_PublicKey != "":
+	case config.SSH_PrivateKey != "":
 	default:
 		return nil, fmt.Errorf("no ssh auth")
 	}
@@ -163,36 +166,40 @@ func LoadProxyConfig(fp string, keys ...string) (config *ProxyConfig, err error)
 	return config, nil
 }
 
+func (self *ProxyConfig) SSH_AuthMethod() string {
+	switch {
+	case self.SSH_Password != "":
+		return "password"
+	case self.SSH_PrivateKey != "":
+		return "private_key"
+	default:
+		return "none"
+	}
+}
+
 func (self *ProxyConfig) DialSSH() (client *ssh.Client, err error) {
 	var (
-		config  *ssh.ClientConfig
-		hostKey ssh.PublicKey
-		signer  ssh.Signer
+		config *ssh.ClientConfig
+		signer ssh.Signer
 	)
 
-	config = &ssh.ClientConfig{
-		User: self.SSH_User,
-	}
+	config = &ssh.ClientConfig{User: self.SSH_User}
 
-	if self.SSH_PublicKey == "" {
+	if self.SSH_KnownHosts != "" {
+		if config.HostKeyCallback, err = knownhosts.New(self.SSH_KnownHosts); err != nil {
+			return nil, fmt.Errorf("loading known hosts: %w", err)
+		}
+	} else {
 		// Warning: use this only for testing, not in production
 		config.HostKeyCallback = ssh.InsecureIgnoreHostKey()
-	} else {
-		if hostKey, err = LoadPublicKey(self.SSH_PublicKey); err != nil {
-			return nil, fmt.Errorf("loading public key: %w", err)
-		}
-		config.HostKeyCallback = ssh.FixedHostKey(hostKey)
 	}
 
 	if self.SSH_Password != "" {
-		config.Auth = []ssh.AuthMethod{
-			ssh.Password(self.SSH_Password),
-		}
+		config.Auth = []ssh.AuthMethod{ssh.Password(self.SSH_Password)}
 	} else {
 		if signer, err = LoadPrivateKey(self.SSH_PrivateKey); err != nil {
 			return nil, fmt.Errorf("loading private key: %w", err)
 		}
-
 		config.Auth = []ssh.AuthMethod{ssh.PublicKeys(signer)}
 	}
 
@@ -205,11 +212,11 @@ func (self *ProxyConfig) DialSSH() (client *ssh.Client, err error) {
 
 // path: /home/account/.ssh/id_rsa
 // LoadPrivateKey loads an RSA private key from a file
-func LoadPrivateKey(keyPath string) (signer ssh.Signer, err error) {
+func LoadPrivateKey(p string) (signer ssh.Signer, err error) {
 	var bts []byte
 
 	// Read the private key file
-	if bts, err = ioutil.ReadFile(keyPath); err != nil {
+	if bts, err = ioutil.ReadFile(p); err != nil {
 		return nil, fmt.Errorf("unable to read private key: %w", err)
 	}
 
@@ -221,22 +228,39 @@ func LoadPrivateKey(keyPath string) (signer ssh.Signer, err error) {
 	return signer, nil
 }
 
-// path: /home/account/.ssh/id_rsa.pub
-func LoadPublicKey(keyPath string) (pubKey ssh.PublicKey, err error) {
-	var (
-		bts []byte
-		pk  ssh.PublicKey
-	)
+// ?? path: /home/account/.ssh/id_rsa.pub
+func LoadAuthorizedKey(p string) (pubKey ssh.PublicKey, err error) {
+	var bts []byte
+
+	if bts, err = ioutil.ReadFile(p); err != nil {
+		return nil, fmt.Errorf("unable to read public key: %w", err)
+	}
+
+	// ssh.ParseKnownHosts
+	if pubKey, _, _, _, err = ssh.ParseAuthorizedKey(bts); err != nil {
+		return nil, fmt.Errorf("unable to parse authorized key: %w", err)
+	}
+
+	if pubKey, err = ssh.ParsePublicKey(pubKey.Marshal()); err != nil {
+		return nil, fmt.Errorf("unable to parse public key: %w", err)
+	}
+
+	return pubKey, nil
+}
+
+// ?? path: /home/account/.ssh/known_hosts
+func LoadKnownHosts(keyPath string) (pubKey ssh.PublicKey, err error) {
+	var bts []byte
 
 	if bts, err = ioutil.ReadFile(keyPath); err != nil {
 		return nil, fmt.Errorf("unable to read public key: %w", err)
 	}
 
-	if pk, _, _, _, err = ssh.ParseAuthorizedKey(bts); err != nil {
+	if _, _, pubKey, _, _, err = ssh.ParseKnownHosts(bts); err != nil {
 		return nil, fmt.Errorf("unable to parse authorized key: %w", err)
 	}
 
-	if pubKey, err = ssh.ParsePublicKey(pk.Marshal()); err != nil {
+	if pubKey, err = ssh.ParsePublicKey(pubKey.Marshal()); err != nil {
 		return nil, fmt.Errorf("unable to parse public key: %w", err)
 	}
 
