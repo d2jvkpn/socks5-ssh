@@ -1,0 +1,8 @@
+socks5_ssh:
+  ssh_address: example.local:22
+  ssh_user: account
+  ssh_password: password
+  #ssh_public_key: /home/account/.ssh/id_rsa.pub
+  #ssh_private_key: /home/account/.ssh/id_rsa
+  socks5_user: hello
+  socks5_password: world
