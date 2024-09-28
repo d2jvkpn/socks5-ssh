@@ -53,10 +53,10 @@ func main() {
 		}
 
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "\nexit %s\n", err)
+			fmt.Fprintf(os.Stderr, "\nEXIT: %s\n", err)
 			os.Exit(1)
 		} else {
-			fmt.Fprintf(os.Stderr, "\nexit 0\n")
+			fmt.Fprintf(os.Stderr, "\nEXIT: 0\n")
 		}
 	}()
 
