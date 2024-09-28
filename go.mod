@@ -1,4 +1,4 @@
-module socks5-proxy
+module github.com/d2jvkpn/socks5-ssh
 
 go 1.23
 
@@ -6,7 +6,6 @@ require (
 	github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5
 	github.com/spf13/viper v1.19.0
 	golang.org/x/crypto v0.27.0
-	golang.org/x/net v0.29.0
 )
 
 require (
@@ -25,6 +24,7 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
+	golang.org/x/net v0.29.0 // indirect
 	golang.org/x/sys v0.25.0 // indirect
 	golang.org/x/text v0.18.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
