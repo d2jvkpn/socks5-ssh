@@ -11,11 +11,13 @@ lint:
 	go fmt ./...
 	go vet ./...
 
-	app_name=swagger bash bin/swagger-go/swag.sh false > /dev/null
-
 build:
 	mkdir -p target
 	go build -o target/main main.go
+
+app:
+	mkdir -p target
+	go build -o target/socks5-ssh main.go
 
 run:
 	make build

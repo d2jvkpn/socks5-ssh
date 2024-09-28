@@ -2,12 +2,15 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"log/slog"
 	"net"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/armon/go-socks5"
 	"github.com/spf13/viper"
@@ -29,6 +32,10 @@ func main() {
 		socks5Config *socks5.Config
 		listener     net.Listener
 		socks5Server *socks5.Server
+
+		count int
+		errCh chan error
+		sigCh chan os.Signal
 	)
 
 	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
@@ -42,12 +49,14 @@ func main() {
 
 	defer func() {
 		if sshClient != nil {
-			_ = sshClient.Close()
+			err = errors.Join(err, sshClient.Close())
 		}
 
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s\n", err)
+			fmt.Fprintf(os.Stderr, "\nexit %s\n", err)
 			os.Exit(1)
+		} else {
+			fmt.Fprintf(os.Stderr, "\nexit 0\n")
 		}
 	}()
 
@@ -66,18 +75,17 @@ func main() {
 			// println("~~~", network, addr)
 			conn, err = sshClient.Dial(network, addr)
 
-			if err != nil {
-				if debug {
-					logger.Warn("ssh dail", "network", network, "addr", addr, "error", err)
-				}
-				return nil, err
+			if !debug {
+				return conn, err
 			}
 
-			if debug {
+			if err != nil {
+				logger.Warn("ssh dail", "network", network, "addr", addr, "error", err)
+			} else {
 				logger.Info("ssh dail", "network", network, "addr", addr)
 			}
 
-			return conn, nil
+			return conn, err
 		},
 	}
 
@@ -86,7 +94,6 @@ func main() {
 			proxyConfig.Socks5User: proxyConfig.Socks5Password,
 		}
 
-		// fmt.Println("~~~", credentials)
 		socks5Config.AuthMethods = []socks5.Authenticator{
 			socks5.UserPassAuthenticator{Credentials: credentials},
 		}
@@ -102,20 +109,43 @@ func main() {
 		return
 	}
 
-	logger.Info(
-		"Starting SOCKS5 proxy",
-		"config", config,
-		"address", addr,
-		"debug", debug,
-		"network", network,
-		"sshAuth", proxyConfig.SSH_AuthMethod(),
-		"socks5WithAuth", proxyConfig.Socks5User != "",
-	)
+	errCh = make(chan error, 1)
+	sigCh = make(chan os.Signal)
+	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+	count = 1
 
-	if err = socks5Server.Serve(listener); err != nil {
-		err = fmt.Errorf("Failed to start SOCKS5 server: %w", err)
-		return
+	go func() {
+		var err error
+
+		logger.Info(
+			"Starting SOCKS5 proxy",
+			"config", config,
+			"address", addr,
+			"debug", debug,
+			"network", network,
+			"sshAuth", proxyConfig.SSH_AuthMethod(),
+			"socks5WithAuth", proxyConfig.Socks5User != "",
+		)
+
+		err = socks5Server.Serve(listener)
+		errCh <- err
+	}()
+
+	syncErr := func(count int) {
+		for i := 0; i < count; i++ {
+			err = errors.Join(err, <-errCh)
+		}
 	}
+
+	select {
+	case e := <-errCh:
+		err = errors.Join(err, e)
+		count -= 1
+	case <-sigCh:
+		err = errors.Join(err, listener.Close())
+	}
+
+	syncErr(count)
 }
 
 type ProxyConfig struct {
