@@ -109,10 +109,10 @@ func main() {
 		return
 	}
 
+	count = 1
 	errCh = make(chan error, 1)
 	sigCh = make(chan os.Signal)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	count = 1
 
 	go func() {
 		var err error
