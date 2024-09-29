@@ -18,13 +18,14 @@ import (
 
 func RunProxy(args []string) {
 	var (
-		flagSet      *flag.FlagSet
-		config       string
-		subkey       string
-		network      string
-		addr         string
-		err          error
-		logger       *slog.Logger
+		flagSet *flag.FlagSet
+		config  string
+		subkey  string
+		network string
+		addr    string
+		err     error
+		logger  *slog.Logger
+
 		proxyConfig  *proxy.Proxy
 		socks5Config *socks5.Config
 		listener     net.Listener
