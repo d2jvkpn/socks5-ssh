@@ -22,7 +22,7 @@ make build
 
 3. run
 ```bash
-./target/main -config=configs/local.yaml -addr=127.0.0.1:1080
+./target/main proxy -config=configs/local.yaml -addr=127.0.0.1:1080
 ```
 
 #### C02. Usage

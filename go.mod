@@ -1,4 +1,4 @@
-module github.com/d2jvkpn/socks5-ssh
+module github.com/d2jvkpn/socks5-proxy
 
 go 1.23
 

@@ -10,13 +10,13 @@ import (
 	"os"
 	"strings"
 
-	"github.com/d2jvkpn/socks5-ssh/pkg/proxy"
+	"github.com/d2jvkpn/socks5-proxy/pkg/proxy"
 
 	"github.com/armon/go-socks5"
 	"github.com/d2jvkpn/gotk"
 )
 
-func RunProxy(args []string) {
+func RunSSHProxy(args []string) {
 	var (
 		flagSet *flag.FlagSet
 		config  string
@@ -41,7 +41,7 @@ func RunProxy(args []string) {
 	flagSet = flag.NewFlagSet("proxy", flag.ContinueOnError) // flag.ExitOnError
 
 	flagSet.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
-	flagSet.StringVar(&subkey, "subkey", "proxy", "use subkey of config(yaml)")
+	flagSet.StringVar(&subkey, "subkey", "ssh", "use subkey of config(yaml)")
 	flagSet.StringVar(&addr, "addr", ":1080", "socks5 listening address")
 	flagSet.StringVar(&network, "network", "tcp", "network")
 

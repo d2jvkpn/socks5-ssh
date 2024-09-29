@@ -5,18 +5,18 @@ import (
 	"os"
 
 	"github.com/d2jvkpn/gotk"
-	"github.com/d2jvkpn/socks5-ssh/bin"
+	"github.com/d2jvkpn/socks5-proxy/bin"
 )
 
 func main() {
 	var command *gotk.Command
 
-	command = gotk.NewCommand("socks5-ssh")
+	command = gotk.NewCommand("socks5")
 
 	command.AddCmd(
-		"proxy",
+		"ssh",
 		"socks5 proxy through ssh",
-		bin.RunProxy,
+		bin.RunSSHProxy,
 	)
 
 	command.Execute(os.Args[1:])

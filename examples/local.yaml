@@ -1,4 +1,4 @@
-proxy:
+ssh:
   ssh_address: remote_host:22
   ssh_user: account
   ssh_password: password
