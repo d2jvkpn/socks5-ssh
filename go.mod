@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5
-	github.com/d2jvkpn/gotk v0.0.0-20240929040113-4ca83b673cd9
+	github.com/d2jvkpn/gotk v0.0.0-20240929103137-6e02bc002ded
 	github.com/spf13/viper v1.19.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.27.0
