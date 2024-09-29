@@ -94,7 +94,7 @@ func main() {
 
 	count = cap(errCh)
 
-	syncErr := func(count int) {
+	syncErrs := func(count int) {
 		for i := 0; i < count; i++ {
 			err = errors.Join(err, <-errCh)
 		}
@@ -108,5 +108,5 @@ func main() {
 		err = errors.Join(err, listener.Close())
 	}
 
-	syncErr(count)
+	syncErrs(count)
 }
