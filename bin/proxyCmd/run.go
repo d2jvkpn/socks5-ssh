@@ -8,13 +8,12 @@ import (
 	"log/slog"
 	"net"
 	"os"
-	"os/signal"
 	"strings"
-	"syscall"
 
 	"github.com/d2jvkpn/socks5-ssh/pkg/proxy"
 
 	"github.com/armon/go-socks5"
+	"github.com/d2jvkpn/gotk"
 )
 
 func Run(args []string) {
@@ -32,9 +31,7 @@ func Run(args []string) {
 		listener     net.Listener
 		socks5Server *socks5.Server
 
-		count    int
 		errCh    chan error
-		sigCh    chan os.Signal
 		shutdown func() error
 	)
 
@@ -93,7 +90,6 @@ func Run(args []string) {
 
 	// 4.
 	errCh = make(chan error, 1)
-	count = cap(errCh)
 
 	go func() {
 		var err error
@@ -120,26 +116,5 @@ func Run(args []string) {
 	shutdown = listener.Close
 
 	// 5.
-	sigCh = make(chan os.Signal)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-
-	syncErrs := func(err error, count int) error {
-		for i := 0; i < count; i++ {
-			err = errors.Join(err, <-errCh)
-		}
-		return err
-	}
-
-	select {
-	case e := <-errCh:
-		logger.Error("... received from channel errch", "error", e)
-		err = errors.Join(err, e)
-		count -= 1
-	case sig := <-sigCh:
-		fmt.Println()
-		logger.Info("... received from channel quit", "signal", sig.String())
-		err = errors.Join(err, shutdown())
-	}
-
-	err = syncErrs(err, count)
+	err = gotk.ExitChan(errCh, shutdown)
 }
