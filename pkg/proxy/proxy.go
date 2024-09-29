@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log/slog"
 	"net"
+	"strings"
 
 	"github.com/armon/go-socks5"
 	"github.com/spf13/viper"
@@ -59,28 +60,18 @@ func LoadProxy(fp string, keys ...string) (config *Proxy, err error) {
 		return nil, fmt.Errorf("no ssh auth")
 	}
 
-	if err = config.dialSSH(); err != nil {
+	if err = config.dial(); err != nil {
 		return nil, fmt.Errorf("dial ssh: %w", err)
 	}
 
 	return config, nil
 }
 
-func (self *Proxy) SSH_AuthMethod() string {
-	switch {
-	case self.SSH_Password != "":
-		return "password"
-	case self.SSH_PrivateKey != "":
-		return "private_key"
-	default:
-		return "none"
-	}
-}
-
-func (self *Proxy) dialSSH() (err error) {
+func (self *Proxy) dial() (err error) {
 	var (
 		config *ssh.ClientConfig
 		signer ssh.Signer
+		auths  []ssh.AuthMethod
 	)
 
 	config = &ssh.ClientConfig{User: self.SSH_User}
@@ -94,20 +85,42 @@ func (self *Proxy) dialSSH() (err error) {
 		config.HostKeyCallback = ssh.InsecureIgnoreHostKey()
 	}
 
+	auths = make([]ssh.AuthMethod, 0)
 	if self.SSH_Password != "" {
-		config.Auth = []ssh.AuthMethod{ssh.Password(self.SSH_Password)}
-	} else {
+		auths = append(auths, ssh.Password(self.SSH_Password))
+	}
+
+	if self.SSH_PrivateKey != "" {
 		if signer, err = LoadPrivateKey(self.SSH_PrivateKey); err != nil {
 			return fmt.Errorf("loading private key: %w", err)
 		}
-		config.Auth = []ssh.AuthMethod{ssh.PublicKeys(signer)}
+		auths = append(auths, ssh.PublicKeys(signer))
 	}
+
+	config.Auth = auths
 
 	if self.sshClient, err = ssh.Dial("tcp", self.SSH_Address, config); err != nil {
 		return fmt.Errorf("dial: %w", err)
 	}
 
 	return nil
+}
+
+// ssh auth methods
+func (self *Proxy) AuthMethods() string {
+	var methods []string
+
+	methods = make([]string, 0)
+
+	if self.SSH_Password != "" {
+		methods = append(methods, "password")
+	}
+
+	if self.SSH_PrivateKey != "" {
+		methods = append(methods, "private_key")
+	}
+
+	return strings.Join(methods, ",")
 }
 
 func (self *Proxy) Socks5Config(logger *slog.Logger) (config *socks5.Config) {

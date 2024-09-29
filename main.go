@@ -38,7 +38,7 @@ func main() {
 	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
 
 	flag.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
-	flag.StringVar(&subkey, "subkey", "socks5_ssh", "use subkey of config(yaml)")
+	flag.StringVar(&subkey, "subkey", "proxy", "use subkey of config(yaml)")
 	flag.StringVar(&addr, "addr", ":1080", "socks5 listening address")
 	flag.StringVar(&network, "network", "tcp", "network")
 	flag.BoolVar(&debug, "debug", false, "enable debug")
@@ -71,7 +71,6 @@ func main() {
 		return
 	}
 
-	count = 1
 	errCh = make(chan error, 1)
 	sigCh = make(chan os.Signal)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
@@ -85,13 +84,15 @@ func main() {
 			"address", addr,
 			"debug", debug,
 			"network", network,
-			"sshAuth", proxyConfig.SSH_AuthMethod(),
+			"authMethods", proxyConfig.AuthMethods(),
 			"socks5WithAuth", proxyConfig.Socks5User != "",
 		)
 
 		err = socks5Server.Serve(listener)
 		errCh <- err
 	}()
+
+	count = cap(errCh)
 
 	syncErr := func(count int) {
 		for i := 0; i < count; i++ {
