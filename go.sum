@@ -1,7 +1,7 @@
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5 h1:0CwZNZbxp69SHPdPJAN/hZIm0C4OItdklCFmMRWYpio=
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5/go.mod h1:wHh0iHkYZB8zMSxRWpUBQtwG5a7fFgvEO+odwuTv2gs=
-github.com/d2jvkpn/gotk v0.0.0-20240929123332-b7b015ebae70 h1:ylY2i+/y7r8sdu7V6WD4y2jAAf0ZdziTbpsye+cMK7E=
-github.com/d2jvkpn/gotk v0.0.0-20240929123332-b7b015ebae70/go.mod h1:bPFZQ2nEjlpBAFQEIfiddSQLUHvAN8gtOSL1fFwHQBs=
+github.com/d2jvkpn/gotk v0.0.0-20240929132819-a79dbd279333 h1:MuGOXp13e66LeTjAdQzvTxvwaQ3qlNXUjiVjCRhnJH0=
+github.com/d2jvkpn/gotk v0.0.0-20240929132819-a79dbd279333/go.mod h1:bPFZQ2nEjlpBAFQEIfiddSQLUHvAN8gtOSL1fFwHQBs=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
