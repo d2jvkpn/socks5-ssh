@@ -32,13 +32,15 @@ func Run(args []string) {
 		listener     net.Listener
 		socks5Server *socks5.Server
 
-		count int
-		errCh chan error
-		sigCh chan os.Signal
+		count    int
+		errCh    chan error
+		sigCh    chan os.Signal
+		shutdown func() error
 	)
 
 	// 1.
 	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
+	shutdown = func() error { return nil }
 
 	defer func() {
 		err = errors.Join(err, proxyConfig.Close())
@@ -115,14 +117,17 @@ func Run(args []string) {
 		errCh <- err
 	}()
 
+	shutdown = listener.Close
+
 	// 5.
 	sigCh = make(chan os.Signal)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 
-	syncErrs := func(count int) {
+	syncErrs := func(err error, count int) error {
 		for i := 0; i < count; i++ {
 			err = errors.Join(err, <-errCh)
 		}
+		return err
 	}
 
 	select {
@@ -133,8 +138,8 @@ func Run(args []string) {
 	case sig := <-sigCh:
 		fmt.Println()
 		logger.Info("... received from channel quit", "signal", sig.String())
-		err = errors.Join(err, listener.Close())
+		err = errors.Join(err, shutdown())
 	}
 
-	syncErrs(count)
+	err = syncErrs(err, count)
 }
