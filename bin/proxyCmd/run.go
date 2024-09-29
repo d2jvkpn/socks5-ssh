@@ -31,15 +31,15 @@ func Run(args []string) {
 		listener     net.Listener
 		socks5Server *socks5.Server
 
-		errCh chan error
+		errCh    chan error
+		shutdown func() error
 	)
 
 	// 1.
 	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
+	shutdown = func() error { return nil }
 
 	defer func() {
-		err = errors.Join(err, proxyConfig.Close())
-
 		if err != nil {
 			// fmt.Fprintf(os.Stderr, "\nexit: %s\n", err)
 			logger.Error("exit", "error", err)
@@ -86,6 +86,12 @@ func Run(args []string) {
 		return
 	}
 
+	shutdown = func() (err error) {
+		err = errors.Join(err, listener.Close())
+		err = errors.Join(err, proxyConfig.Close())
+		return err
+	}
+
 	// 4.
 	errCh = make(chan error, 1)
 
@@ -112,5 +118,5 @@ func Run(args []string) {
 	}()
 
 	// 5.
-	err = gotk.ExitChan(errCh, listener.Close)
+	err = gotk.ExitChan(errCh, shutdown)
 }
