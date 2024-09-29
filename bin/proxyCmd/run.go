@@ -19,7 +19,6 @@ import (
 func Run(args []string) {
 	var (
 		flagSet      *flag.FlagSet
-		debug        bool
 		config       string
 		subkey       string
 		network      string
@@ -55,7 +54,6 @@ func Run(args []string) {
 	flagSet.StringVar(&subkey, "subkey", "proxy", "use subkey of config(yaml)")
 	flagSet.StringVar(&addr, "addr", ":1080", "socks5 listening address")
 	flagSet.StringVar(&network, "network", "tcp", "network")
-	flagSet.BoolVar(&debug, "debug", false, "enable debug")
 
 	flagSet.Usage = func() {
 		output := flag.CommandLine.Output()
@@ -102,7 +100,6 @@ func Run(args []string) {
 			"Starting SOCKS5 proxyConfig",
 			"config", config,
 			"address", addr,
-			"debug", debug,
 			"network", network,
 			"authMethods", proxyConfig.AuthMethods(),
 			"socks5User", proxyConfig.Socks5User,
