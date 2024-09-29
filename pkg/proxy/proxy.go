@@ -219,9 +219,9 @@ func (self *Proxy) Close() (err error) {
 		err = errors.Join(err, self.sshClient.Close())
 	}
 
-	if self.Logger != nil {
-		err = errors.Join(err, self.Logger.Sync())
-	}
+	//if self.Logger != nil {
+	//	err = errors.Join(err, self.Logger.Sync())
+	//}
 
 	return err
 }
