@@ -48,7 +48,7 @@ func Run(args []string) {
 		}
 	}()
 
-	flagSet = flag.NewFlagSet("run_proxy", flag.ExitOnError) // flag.ContinueOnError
+	flagSet = flag.NewFlagSet("proxy", flag.ContinueOnError) // flag.ExitOnError
 
 	flagSet.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
 	flagSet.StringVar(&subkey, "subkey", "proxy", "use subkey of config(yaml)")

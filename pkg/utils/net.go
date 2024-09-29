@@ -7,8 +7,8 @@ import (
 )
 
 type DeivceIPs struct {
-	Name string
-	IPs  []string
+	Name string   `json:"name"`
+	IPs  []string `json:"ips"`
 }
 
 func GetIPs() (items []DeivceIPs, err error) {
