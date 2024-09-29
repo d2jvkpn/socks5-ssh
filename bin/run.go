@@ -100,7 +100,7 @@ func RunProxy(args []string) {
 		var err error
 
 		logger.Info(
-			"Starting SOCKS5 proxyConfig",
+			"Starting SOCKS5 proxying",
 			"config", config,
 			"address", addr,
 			"network", network,
