@@ -31,6 +31,7 @@ make build
 proxy=socks5://hello:world@127.0.0.1:1080
 
 https_proxy=$proxy git pull
+https_proxy=$proxy git push
 
 https_proxy=$proxy curl -4 https://icanhazip.com
 curl -x "$proxy" https://icanhazip.com
