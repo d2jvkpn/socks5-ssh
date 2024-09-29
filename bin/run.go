@@ -1,4 +1,4 @@
-package proxyCmd
+package bin
 
 import (
 	// "context"
@@ -16,7 +16,7 @@ import (
 	"github.com/d2jvkpn/gotk"
 )
 
-func Run(args []string) {
+func RunProxy(args []string) {
 	var (
 		flagSet      *flag.FlagSet
 		config       string

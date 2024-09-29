@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
-	"github.com/d2jvkpn/socks5-ssh/bin/proxyCmd"
+	"github.com/d2jvkpn/socks5-ssh/bin"
 )
 
 func main() {
-	proxyCmd.Run(os.Args[1:])
+	bin.RunProxy(os.Args[1:])
 }
