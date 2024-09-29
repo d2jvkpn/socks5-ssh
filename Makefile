@@ -23,7 +23,11 @@ app:
 
 run:
 	make build
-	./target/main --config=configs/local.yaml -debug
+	./target/main -debug -config=configs/local.yaml
+
+noauth:
+	make build
+	./target/main -debug -config=configs/local.yaml -subkey=noauth -addr=127.0.0.1:1080
 
 test:
 	curl -k -x 'socks5://hello:world@127.0.0.1:1080' https://icanhazip.com
