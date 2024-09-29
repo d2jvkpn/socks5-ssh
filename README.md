@@ -37,7 +37,7 @@ curl -x "$proxy" https://icanhazip.com
 ```
 
 2. web browser with sock5 proxt
-**neither firefox or chromium support socks5 with auth**
+(**Neither Firefox nor Chromium supports SOCKS5 with authentication**)
 ```bash
 proxy=socks5://127.0.0.1:1080
 
