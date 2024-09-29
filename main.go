@@ -60,7 +60,7 @@ func main() {
 		return
 	}
 
-	socks5Config = proxyConfig.Socks5Config(logger)
+	socks5Config = proxyConfig.Socks5Config()
 	if socks5Server, err = socks5.New(socks5Config); err != nil {
 		err = fmt.Errorf("Failed to create SOCKS5 server: %w", err)
 		return
@@ -85,7 +85,7 @@ func main() {
 			"debug", debug,
 			"network", network,
 			"authMethods", proxyConfig.AuthMethods(),
-			"socks5WithAuth", proxyConfig.Socks5User != "",
+			"socks5User", proxyConfig.Socks5User,
 		)
 
 		err = socks5Server.Serve(listener)

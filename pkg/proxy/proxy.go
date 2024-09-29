@@ -1,15 +1,20 @@
 package proxy
 
 import (
+	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io/ioutil"
-	"log/slog"
+	"log"
 	"net"
 	"strings"
 
 	"github.com/armon/go-socks5"
+	"github.com/d2jvkpn/gotk"
 	"github.com/spf13/viper"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/knownhosts"
 )
@@ -20,10 +25,50 @@ type Proxy struct {
 	SSH_Password   string `mapstructure:"ssh_password"`
 	SSH_PrivateKey string `mapstructure:"ssh_private_key"`
 	SSH_KnownHosts string `mapstructure:"ssh_known_hosts"`
-	sshClient      *ssh.Client
 
 	Socks5User     string `mapstructure:"socks5_user"`
 	Socks5Password string `mapstructure:"socks5_password"`
+
+	sshClient *ssh.Client
+	Logger    *Logger
+}
+
+type Logger struct {
+	*zap.Logger
+
+	// set log level for method Write
+	WriterName     string
+	WriterLogLevel zapcore.Level
+}
+
+func DefaultLogger() *Logger {
+	lg, _ := gotk.NewZapLogger("", zapcore.InfoLevel, 256)
+	return &Logger{
+		Logger:         lg.Logger,
+		WriterName:     "socks5",
+		WriterLogLevel: zapcore.ErrorLevel,
+	}
+}
+
+func NewLogger(lg *zap.Logger) *Logger {
+	return &Logger{
+		Logger:         lg,
+		WriterName:     "socks5",
+		WriterLogLevel: zapcore.ErrorLevel,
+	}
+}
+
+// implements io.Writer
+func (self *Logger) Write(p []byte) (int, error) {
+	self.Named(self.WriterName).Log(
+		self.WriterLogLevel,
+		fmt.Sprintf("%s", bytes.TrimSpace(p)),
+	)
+	return 0, nil
+}
+
+func (self *Logger) StdLogger() *log.Logger {
+	return log.New(self, "", 0)
 }
 
 func LoadProxy(fp string, keys ...string) (config *Proxy, err error) {
@@ -63,6 +108,7 @@ func LoadProxy(fp string, keys ...string) (config *Proxy, err error) {
 	if err = config.dial(); err != nil {
 		return nil, fmt.Errorf("dial ssh: %w", err)
 	}
+	config.Logger = DefaultLogger()
 
 	return config, nil
 }
@@ -123,16 +169,28 @@ func (self *Proxy) AuthMethods() string {
 	return strings.Join(methods, ",")
 }
 
-func (self *Proxy) Socks5Config(logger *slog.Logger) (config *socks5.Config) {
+func (self *Proxy) Socks5Config() (config *socks5.Config) {
+	logger := self.Logger.Named("proxy")
+
 	config = &socks5.Config{
+		Logger: self.Logger.StdLogger(),
 		Dial: func(ctx context.Context, network, addr string) (conn net.Conn, err error) {
 			// println("~~~", network, addr)
 			conn, err = self.sshClient.Dial(network, addr)
 
 			if err != nil {
-				logger.Warn("ssh dail", "network", network, "addr", addr, "error", err)
+				logger.Warn(
+					"ssh dail",
+					zap.String("network", network),
+					zap.String("addr", addr),
+					zap.Any("error", err),
+				)
 			} else {
-				logger.Info("ssh dail", "network", network, "addr", addr)
+				logger.Info(
+					"ssh dail",
+					zap.String("network", network),
+					zap.String("addr", addr),
+				)
 			}
 
 			return conn, err
@@ -153,11 +211,19 @@ func (self *Proxy) Socks5Config(logger *slog.Logger) (config *socks5.Config) {
 }
 
 func (self *Proxy) Close() (err error) {
-	if self == nil || self.sshClient == nil {
-		return nil
+	if self == nil {
+		return
 	}
 
-	return self.sshClient.Close()
+	if self.sshClient != nil {
+		err = errors.Join(err, self.sshClient.Close())
+	}
+
+	if self.Logger != nil {
+		err = errors.Join(err, self.Logger.Sync())
+	}
+
+	return err
 }
 
 // path: /home/account/.ssh/id_rsa
