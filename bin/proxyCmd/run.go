@@ -35,18 +35,7 @@ func Run(args []string) {
 	)
 
 	// 1.
-	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	shutdown = func() error { return nil }
-
-	defer func() {
-		if err != nil {
-			// fmt.Fprintf(os.Stderr, "\nexit: %s\n", err)
-			logger.Error("exit", "error", err)
-			os.Exit(1)
-		} else {
-			logger.Info("exit")
-		}
-	}()
 
 	flagSet = flag.NewFlagSet("proxy", flag.ContinueOnError) // flag.ExitOnError
 
@@ -57,14 +46,28 @@ func Run(args []string) {
 
 	flagSet.Usage = func() {
 		output := flag.CommandLine.Output()
-		fmt.Fprintf(output, "Usage of %s:\n", "proxy")
+		fmt.Fprintf(output, "Usage of proxy:\n")
 		flagSet.PrintDefaults()
 	}
 
 	// fmt.Println("~~~ args:", args)
 	if err = flagSet.Parse(args); err != nil {
+		fmt.Fprintf(os.Stderr, "proxy exit: %v\n", err)
+		os.Exit(1)
 		return
 	}
+
+	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
+
+	defer func() {
+		if err != nil {
+			// fmt.Fprintf(os.Stderr, "\nexit: %s\n", err)
+			logger.Error("exit", "error", err)
+			os.Exit(1)
+		} else {
+			logger.Info("exit")
+		}
+	}()
 
 	// 2.
 	if proxyConfig, err = proxy.LoadProxy(config, subkey); err != nil {
