@@ -8,7 +8,7 @@ import (
 	"github.com/d2jvkpn/socks5-proxy/bin"
 
 	"github.com/d2jvkpn/gotk"
-	// "github.com/spf13/viper"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -19,14 +19,17 @@ var (
 func main() {
 	var (
 		err     error
+		project *viper.Viper
 		command *gotk.Command
 	)
 
-	command = gotk.NewCommand("socks5")
-	if command.Project, err = gotk.ProjectFromBytes(_Project); err != nil {
+	if project, err = gotk.ProjectFromBytes(_Project); err != nil {
 		fmt.Fprintf(os.Stderr, "load project: %s\n", err)
 		os.Exit(1)
 	}
+
+	command = gotk.NewCommand(project.GetString("app_name"))
+	command.Project = project
 
 	command.AddCmd(
 		"ssh",
