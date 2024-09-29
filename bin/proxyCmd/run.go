@@ -91,8 +91,6 @@ func Run(args []string) {
 
 	// 4.
 	errCh = make(chan error, 1)
-	sigCh = make(chan os.Signal)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 	count = cap(errCh)
 
 	go func() {
@@ -118,6 +116,9 @@ func Run(args []string) {
 	}()
 
 	// 5.
+	sigCh = make(chan os.Signal)
+	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+
 	syncErrs := func(count int) {
 		for i := 0; i < count; i++ {
 			err = errors.Join(err, <-errCh)
