@@ -18,12 +18,11 @@ proxy:
 2. compile
 ```bash
 make build
-ls target/main
 ```
 
 3. run
 ```bash
-./target main -debug -config=configs/local.yaml -addr=:1080
+./target/main -debug -config=configs/local.yaml -addr=:1080
 ```
 
 #### C02. Usage
