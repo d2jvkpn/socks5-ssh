@@ -62,7 +62,6 @@ func RunProxy(args []string) {
 
 	defer func() {
 		if err != nil {
-			// fmt.Fprintf(os.Stderr, "\nexit: %s\n", err)
 			logger.Error("exit", "error", err)
 			os.Exit(1)
 		} else {
