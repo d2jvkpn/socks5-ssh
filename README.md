@@ -5,7 +5,7 @@
 #### C01. App
 1. configuration(configs/local.yaml)
 ```yaml
-proxy:
+ssh:
   ssh_address: remote_host:22
   ssh_user: account
   ssh_password: password
@@ -22,7 +22,7 @@ make build
 
 3. run
 ```bash
-./target/main proxy -config=configs/local.yaml -addr=127.0.0.1:1080
+./target/main ssh -config=configs/local.yaml -addr=127.0.0.1:1080
 ```
 
 #### C02. Usage
