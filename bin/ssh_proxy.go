@@ -18,7 +18,7 @@ import (
 
 func RunSSHProxy(args []string) {
 	var (
-		flagSet *flag.FlagSet
+		fSet    *flag.FlagSet
 		config  string
 		subkey  string
 		network string
@@ -38,22 +38,22 @@ func RunSSHProxy(args []string) {
 	// 1.
 	shutdown = func() error { return nil }
 
-	flagSet = flag.NewFlagSet("proxy", flag.ContinueOnError) // flag.ExitOnError
+	fSet = flag.NewFlagSet("proxy", flag.ContinueOnError) // flag.ExitOnError
 
-	flagSet.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
-	flagSet.StringVar(&subkey, "subkey", "ssh", "use subkey of config(yaml)")
-	flagSet.StringVar(&addr, "addr", ":1080", "socks5 listening address")
-	flagSet.StringVar(&network, "network", "tcp", "network")
+	fSet.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
+	fSet.StringVar(&subkey, "subkey", "ssh", "use subkey of config(yaml)")
+	fSet.StringVar(&addr, "addr", ":1080", "socks5 listening address")
+	fSet.StringVar(&network, "network", "tcp", "network")
 
-	flagSet.Usage = func() {
+	fSet.Usage = func() {
 		output := flag.CommandLine.Output()
 		fmt.Fprintf(output, "Usage of proxy:\n")
-		flagSet.PrintDefaults()
+		fSet.PrintDefaults()
 	}
 
 	// fmt.Println("~~~ args:", args)
-	if err = flagSet.Parse(args); err != nil {
-		fmt.Fprintf(os.Stderr, "proxy exit: %v\n", err)
+	if err = fSet.Parse(args); err != nil {
+		fmt.Fprintf(os.Stderr, "ssh exit: %v\n", err)
 		os.Exit(1)
 		return
 	}
@@ -101,6 +101,7 @@ func RunSSHProxy(args []string) {
 
 		logger.Info(
 			"Starting SOCKS5 proxying",
+			"command", "ssh",
 			"config", config,
 			"address", addr,
 			"network", network,

@@ -4,7 +4,6 @@
 
 working_dir = $(shell pwd)
 
-
 lint:
 	go mod tidy
 	if [ -d vendor ]; then go mod vendor; fi
