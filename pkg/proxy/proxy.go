@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net"
@@ -29,39 +30,31 @@ type Proxy struct {
 	Socks5User     string `mapstructure:"socks5_user"`
 	Socks5Password string `mapstructure:"socks5_password"`
 
-	sshClient *ssh.Client
-	Logger    *Logger
+	*ssh.Client `mapstructure:"-"`
+	Logger      *Logger `mapstructure:"-"`
 }
 
 type Logger struct {
 	*zap.Logger
-
-	// set log level for method Write
-	WriterName     string
-	WriterLogLevel zapcore.Level
 }
 
 func DefaultLogger() *Logger {
-	lg, _ := gotk.NewZapLogger("", zapcore.InfoLevel, 256)
+	// send to stdout
+	lg, _ := gotk.NewZapLogger("", zapcore.DebugLevel, 256)
+
 	return &Logger{
-		Logger:         lg.Logger,
-		WriterName:     "socks5",
-		WriterLogLevel: zapcore.ErrorLevel,
+		Logger: lg.Logger,
 	}
 }
 
 func NewLogger(lg *zap.Logger) *Logger {
-	return &Logger{
-		Logger:         lg,
-		WriterName:     "socks5",
-		WriterLogLevel: zapcore.ErrorLevel,
-	}
+	return &Logger{Logger: lg}
 }
 
-// implements io.Writer
+// implements io.Writer for socks5.Config.Logger
 func (self *Logger) Write(p []byte) (int, error) {
-	self.Named(self.WriterName).Log(
-		self.WriterLogLevel,
+	self.Named("socks5").Log(
+		zapcore.ErrorLevel,
 		fmt.Sprintf("%s", bytes.TrimSpace(p)),
 	)
 	return 0, nil
@@ -120,6 +113,14 @@ func (self *Proxy) dial() (err error) {
 		auths  []ssh.AuthMethod
 	)
 
+	defer func() {
+		if err == nil {
+			return
+		}
+
+		err = errors.Join(err, self.Close())
+	}()
+
 	config = &ssh.ClientConfig{User: self.SSH_User}
 
 	if self.SSH_KnownHosts != "" {
@@ -145,7 +146,7 @@ func (self *Proxy) dial() (err error) {
 
 	config.Auth = auths
 
-	if self.sshClient, err = ssh.Dial("tcp", self.SSH_Address, config); err != nil {
+	if self.Client, err = ssh.Dial("tcp", self.SSH_Address, config); err != nil {
 		return fmt.Errorf("dial: %w", err)
 	}
 
@@ -169,14 +170,59 @@ func (self *Proxy) AuthMethods() string {
 	return strings.Join(methods, ",")
 }
 
+func (self *Proxy) Resolve(ctx context.Context, name string) (
+	c context.Context, ip net.IP, err error) {
+
+	var (
+		bts     []byte
+		session *ssh.Session
+		reader  io.Reader
+		logger  *zap.Logger
+	)
+
+	logger = self.Logger.Named("proxy")
+
+	defer func() {
+		if err != nil {
+			logger.Error("resolve", zap.String("name", name), zap.Any("error", &err))
+		} else {
+			logger.Debug("resolve", zap.String("name", name))
+		}
+	}()
+
+	if session, err = self.Client.NewSession(); err != nil {
+		err = fmt.Errorf("unable to create ssh session: %w", err)
+		return
+	}
+	defer session.Close()
+
+	if reader, err = session.StdoutPipe(); err != nil {
+		err = fmt.Errorf("unable to create stdout pipe: %w", err)
+		return
+	}
+
+	if err = session.Start(fmt.Sprintf("dig +short %s", name)); err != nil {
+		err = fmt.Errorf("unable to run dig +short: %w", err)
+		return
+	}
+
+	bts, err = io.ReadAll(reader)
+	ip = net.ParseIP(string(bts))
+
+	return
+}
+
 func (self *Proxy) Socks5Config() (config *socks5.Config) {
-	logger := self.Logger.Named("proxy")
+	var logger *zap.Logger
+
+	logger = self.Logger.Named("proxy")
 
 	config = &socks5.Config{
-		Logger: self.Logger.StdLogger(),
+		Resolver: self, // socks5.DNSResolver{},
+		Logger:   self.Logger.StdLogger(),
 		Dial: func(ctx context.Context, network, addr string) (conn net.Conn, err error) {
 			// println("~~~", network, addr)
-			conn, err = self.sshClient.Dial(network, addr)
+			conn, err = self.Client.Dial(network, addr)
 
 			if err != nil {
 				logger.Warn(
@@ -186,7 +232,7 @@ func (self *Proxy) Socks5Config() (config *socks5.Config) {
 					zap.Any("error", err),
 				)
 			} else {
-				logger.Info(
+				logger.Debug(
 					"ssh dail",
 					zap.String("network", network),
 					zap.String("addr", addr),
@@ -215,8 +261,9 @@ func (self *Proxy) Close() (err error) {
 		return
 	}
 
-	if self.sshClient != nil {
-		err = errors.Join(err, self.sshClient.Close())
+	if self.Client != nil {
+		err = errors.Join(err, self.Client.Close())
+		self.Client = nil
 	}
 
 	//if self.Logger != nil {
