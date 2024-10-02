@@ -70,7 +70,7 @@ func RunSSHProxy(args []string) {
 	}()
 
 	// 2.
-	if proxyConfig, err = proxy.LoadProxy(config, subkey); err != nil {
+	if proxyConfig, err = proxy.LoadProxy(config, subkey, nil); err != nil {
 		err = fmt.Errorf("Failed to load ssh config: %w", err)
 		return
 	}

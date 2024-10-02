@@ -38,15 +38,6 @@ type Logger struct {
 	*zap.Logger
 }
 
-func DefaultLogger() *Logger {
-	// send to stdout
-	lg, _ := gotk.NewZapLogger("", zapcore.DebugLevel, 256)
-
-	return &Logger{
-		Logger: lg.Logger,
-	}
-}
-
 func NewLogger(lg *zap.Logger) *Logger {
 	return &Logger{Logger: lg}
 }
@@ -64,7 +55,7 @@ func (self *Logger) StdLogger() *log.Logger {
 	return log.New(self, "", 0)
 }
 
-func LoadProxy(fp string, keys ...string) (config *Proxy, err error) {
+func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err error) {
 	var vp *viper.Viper
 
 	vp = viper.New()
@@ -78,11 +69,9 @@ func LoadProxy(fp string, keys ...string) (config *Proxy, err error) {
 	}
 
 	config = new(Proxy)
-	if len(keys) > 0 && keys[0] != "" {
-		err = vp.UnmarshalKey(keys[0], config)
-	} else {
-		err = vp.Unmarshal(config)
-	}
+	err = vp.UnmarshalKey(key, config)
+	// err = vp.Unmarshal(config)
+
 	if err != nil {
 		return nil, fmt.Errorf("unmarshal config: %w", err)
 	}
@@ -101,7 +90,17 @@ func LoadProxy(fp string, keys ...string) (config *Proxy, err error) {
 	if err = config.dial(); err != nil {
 		return nil, fmt.Errorf("dial ssh: %w", err)
 	}
-	config.Logger = DefaultLogger()
+
+	if logger == nil {
+		lg, _ := gotk.NewZapLogger("", zapcore.InfoLevel, 0)
+		config.Logger = &Logger{
+			Logger: lg.Logger,
+		}
+	} else {
+		config.Logger = &Logger{
+			Logger: logger,
+		}
+	}
 
 	return config, nil
 }
