@@ -93,13 +93,9 @@ func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err er
 
 	if logger == nil {
 		lg, _ := gotk.NewZapLogger("", zapcore.InfoLevel, 0)
-		config.Logger = &Logger{
-			Logger: lg.Logger,
-		}
+		config.Logger = &Logger{Logger: lg.Logger}
 	} else {
-		config.Logger = &Logger{
-			Logger: logger,
-		}
+		config.Logger = &Logger{Logger: logger}
 	}
 
 	return config, nil
