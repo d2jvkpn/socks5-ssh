@@ -13,7 +13,7 @@ services:
     working_dir: /app
     volumes:
     - ./configs/:/app/configs:ro
-    - ./logs/:/app/logs
+    # - ./logs/:/app/logs
     command:
     - ./target/main
     - ssh
