@@ -69,10 +69,9 @@ func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err er
 	}
 
 	config = new(Proxy)
-	err = vp.UnmarshalKey(key, config)
-	// err = vp.Unmarshal(config)
 
-	if err != nil {
+	// err = vp.Unmarshal(config)
+	if err = vp.UnmarshalKey(key, config); err != nil {
 		return nil, fmt.Errorf("unmarshal config: %w", err)
 	}
 
