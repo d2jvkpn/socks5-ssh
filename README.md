@@ -34,7 +34,7 @@ make build
 
 4. release
 ```bash
-make  app-linux-amd64
+make release
 ```
 
 #### C02. Usage
