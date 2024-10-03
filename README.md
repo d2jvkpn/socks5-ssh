@@ -13,6 +13,13 @@ ssh:
   ssh_known_hosts: /home/account/.ssh/known_hosts
   socks5_user: hello
   socks5_password: world
+
+noauth:
+  ssh_address: remote_host:22
+  ssh_user: account
+  ssh_password: password
+  ssh_private_key: /home/account/.ssh/id_rsa
+  ssh_known_hosts: /home/account/.ssh/known_hosts
 ```
 
 2. compile
@@ -23,6 +30,11 @@ make build
 3. run
 ```bash
 ./target/main ssh -config=configs/local.yaml -addr=127.0.0.1:1080
+```
+
+4. release
+```bash
+make  app-linux-amd64
 ```
 
 #### C02. Usage
@@ -40,7 +52,7 @@ curl -x "$proxy" https://icanhazip.com
 2. web browser with sock5 proxy
 (**Neither Firefox nor Chromium supports SOCKS5 with authentication**)
 ```bash
-proxy=socks5://127.0.0.1:1080
+proxy=socks5h://127.0.0.1:1080
 
 chromium --disable-extensions --incognito --proxy-server="$proxy"
 

@@ -22,7 +22,7 @@ build:
 	go build -o target/main main.go
 	ls -al target/
 
-app:
+app-linux-amd64:
 	mkdir -p target
 
 	# -w -s -X main.build_hostname=$(build_hostname)
@@ -33,6 +33,8 @@ app:
 	  -X main.git_commit_id=$(git_commit_id) \
 	  -X main.git_commit_time=$(git_commit_time)" \
 	  -o target/socks5-proxy main.go
+
+	tar -C target/ -cvzf target/socks5-proxy.tar.gz socks5-proxy
 
 	ls -al target/
 
