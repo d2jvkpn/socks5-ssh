@@ -20,8 +20,8 @@ RUN apk --no-cache update && \
 WORKDIR /app
 
 ADD ./main.go ./go.mod ./go.sum ./project.yaml ./
-COPY ./internal ./internal
-COPY ./migrations ./migrations
+#COPY ./internal ./internal
+#COPY ./migrations ./migrations
 COPY ./pkg ./pkg
 COPY ./proto ./proto
 COPY ./bin ./bin
@@ -33,21 +33,12 @@ RUN if [ -d ./cache.local/vendor ]; then \
     mv ./cache.local/vendor vendor; \
   fi
 
-RUN if [ -d ./bin/swagger-go/cache.local/vendor ]; then \
-    echo "==> Found ./bin/swagger-go/cache.local/vendor"; \
-    mv ./bin/swagger-go/cache.local/vendor bin/swagger-go/vendor; \
-  fi
-
 # in alpine, date doesn't parse %:z
 # mkdir -p target && go build -o target/main -ldflags="-w -s ${GO_ldflags}" main.go
 RUN mkdir -p target
 
 # note: -trimpath will remove -ldflags
 RUN go build -ldflags="-w -s ${GO_ldflags}" -o target/main main.go
-
-# note: -trimpath will remove -ldflags
-RUN cd bin/swagger-go && \
-  go build -ldflags="-w -s ${GO_ldflags}" -o ../../target/swagger main.go
 
 ####
 FROM alpine:3

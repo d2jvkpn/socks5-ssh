@@ -11,7 +11,7 @@ export IMAGE_Name=$(yq .image_name project.yaml)
 export USER_UID=$(id -u) USER_GID=$(id -g)
 
 mkdir -p configs logs data/postgres data/redis # data/$APP_Name
-envsubst < ${_path}/docker_deploy.yaml > docker-compose.yaml
+envsubst < ${_path}/docker_deploy.yaml > ${_path}/docker-compose.yaml
 
 ####
 exit 0

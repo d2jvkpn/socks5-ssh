@@ -1,10 +1,10 @@
 version: '3'
 
 services:
-  api:
+  ssh:
     image: ${IMAGE_Name}:${IMAGE_Tag}
     restart: always
-    container_name: ${APP_Name}-api
+    container_name: ${APP_Name}-ssh
     user: "${USER_UID}:${USER_GID}"
     networks: ["net"]
     # network_mode: bridge
@@ -16,8 +16,7 @@ services:
     - ./logs/:/app/logs
     command:
     - ./target/main
-    - api
-    - -release
+    - ssh
     - -config=configs/prod.yaml
     - -addr=:${SOCKS5_Port}
 
