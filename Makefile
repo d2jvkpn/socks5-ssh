@@ -38,5 +38,5 @@ test:
 	curl -k -x 'socks5://hello:world@127.0.0.1:1080' https://icanhazip.com
 
 image-dev:
-	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=dev \
+	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=dev DOCKER_Push=false \
 	  bash deployments/docker_build.sh dev
