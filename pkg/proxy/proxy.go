@@ -221,14 +221,14 @@ func (self *Proxy) Socks5Config() (config *socks5.Config) {
 
 			if err != nil {
 				logger.Warn(
-					"ssh dail",
+					"dail",
 					zap.String("network", network),
 					zap.String("addr", addr),
 					zap.Any("error", err),
 				)
 			} else {
 				logger.Debug(
-					"ssh dail",
+					"dail",
 					zap.String("network", network),
 					zap.String("addr", addr),
 				)
