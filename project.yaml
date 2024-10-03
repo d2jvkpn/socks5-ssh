@@ -14,3 +14,12 @@ ssh_config: |
     ssh_known_hosts: /home/account/.ssh/known_hosts
     socks5_user: hello
     socks5_password: world
+
+  noauth:
+    ssh_address: remote_host:22
+    ssh_user: account
+    ssh_password: password
+    ssh_private_key: /home/account/.ssh/id_rsa
+    ssh_known_hosts: /home/account/.ssh/known_hosts
+    socks5_user: hello
+    socks5_password: world
