@@ -56,5 +56,5 @@ else
     GOOS=darwin GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.darwin-amd64 main.go
     GOOS=darwin GOARCH=arm64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.darwin-arm64 main.go
 
-    gzip -f $target_dir/*.{linux,windows,darwin}-*
+    ls $target_dir/*.{linux,windows,darwin}-* | grep -v ".gz$" | xargs -i gzip -f {}
 fi
