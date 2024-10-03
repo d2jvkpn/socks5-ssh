@@ -23,20 +23,8 @@ build:
 	ls -al target/
 
 release:
-	mkdir -p target
-
-	# -w -s -X main.build_hostname=$(build_hostname)
-	@go build -ldflags="\
-	  -X main.build_time=$(build_time) \
-	  -X main.git_repository=$(git_repository) \
-	  -X main.git_branch=$(git_branch) \
-	  -X main.git_commit_id=$(git_commit_id) \
-	  -X main.git_commit_time=$(git_commit_time)" \
-	  -o target/socks5-proxy.linux-amd64 main.go
-
-	tar -C target/ -cvzf target/socks5-proxy.linux-amd64.tar.gz socks5-proxy.linux-amd64
-
-	ls -al target/
+	release=true deployments/go_build.sh
+	ls -at target
 
 ssh:
 	make build
@@ -48,3 +36,7 @@ noauth:
 
 test:
 	curl -k -x 'socks5://hello:world@127.0.0.1:1080' https://icanhazip.com
+
+image-dev:
+	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=dev \
+	  bash deployments/docker_build.sh dev

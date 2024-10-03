@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  api:
+    image: ${IMAGE_Name}:${IMAGE_Tag}
+    restart: always
+    container_name: ${APP_Name}-api
+    user: "${USER_UID}:${USER_GID}"
+    networks: ["net"]
+    # network_mode: bridge
+    ports: ["127.0.0.1:${SOCKS5_Port}:${SOCKS5_Port}"]
+    environment: ["TZ=Asia/Shanghai"]
+    working_dir: /app
+    volumes:
+    - ./configs/:/app/configs:ro
+    - ./logs/:/app/logs
+    command:
+    - ./target/main
+    - api
+    - -release
+    - -config=configs/prod.yaml
+    - -addr=:${SOCKS5_Port}
+
+networks:
+  net: { name: "local", driver: bridge, external: false }
