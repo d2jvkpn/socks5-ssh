@@ -24,7 +24,7 @@ build:
 
 release:
 	release=true deployments/go_build.sh
-	ls -at target
+	ls -al target
 
 ssh:
 	make build
