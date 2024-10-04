@@ -61,8 +61,8 @@ RUN if [ "$BUILD_Region" = "cn" ]; then \
 
 RUN apk --no-cache update && \
   apk --no-cache upgrade && \
-  apk --no-cache add tzdata openssh
-  # curl gcompat
+  apk --no-cache add tzdata openssh curl
+  # gcompat
 
 RUN mkdir -p /app/target
 WORKDIR /app
