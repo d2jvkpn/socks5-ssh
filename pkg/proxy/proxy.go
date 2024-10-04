@@ -33,6 +33,7 @@ type Proxy struct {
 
 	Logger      *Logger `mapstructure:"-"`
 	*ssh.Client `mapstructure:"-"`
+	ticker      *time.Ticker
 }
 
 type Logger struct {
@@ -123,14 +124,15 @@ func (self *Proxy) healthz() (err error) {
 	return
 }
 
-func (self *Proxy) Healthz() (ticker *time.Ticker) {
+func (self *Proxy) Healthz() (err error) {
 	var (
+		ok     bool
 		count  int
 		logger *zap.Logger
 	)
 
 	count = 3
-	ticker = time.NewTicker(2 * time.Second)
+	self.ticker = time.NewTicker(2 * time.Second)
 	logger = self.Logger.Named("proxy")
 
 	healthCheck := func() (err error) {
@@ -145,31 +147,22 @@ func (self *Proxy) Healthz() (ticker *time.Ticker) {
 		return err
 	}
 
-	go func() {
-		var (
-			ok  bool
-			err error
-		)
+	for {
+		select {
+		case _, ok = <-self.ticker.C:
+			if !ok {
+				logger.Debug("ticker stopped")
+				return
+			}
 
-		for {
-			select {
-			case _, ok = <-ticker.C:
-				if !ok {
-					logger.Debug("ticker stopped")
-					return
-				}
-
-				if err = healthCheck(); err != nil {
-					logger.Error("healthz", zap.Int("count", count), zap.Any("error", err))
-					return
-				} else {
-					logger.Debug("healthz")
-				}
+			if err = healthCheck(); err != nil {
+				logger.Error("healthz", zap.Int("count", count), zap.Any("error", err))
+				return err
+			} else {
+				logger.Debug("healthz")
 			}
 		}
-	}()
-
-	return ticker
+	}
 }
 
 func (self *Proxy) dial() (err error) {
@@ -328,6 +321,10 @@ func (self *Proxy) Socks5Config() (config *socks5.Config) {
 func (self *Proxy) Close() (err error) {
 	if self == nil {
 		return
+	}
+
+	if self.ticker != nil {
+		self.ticker.Stop()
 	}
 
 	if self.Client != nil {
