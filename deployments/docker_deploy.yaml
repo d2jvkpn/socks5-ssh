@@ -6,11 +6,11 @@ services:
     restart: always
     healthcheck:
       # "--connect-timeout", "1"
-      test: ["CMD", "curl", "-fI", "-x", "socks5h://127.0.0.1:${SOCKS5_Port}", "https://www.google.com"]
-      interval: 5s
+      test: ["CMD", "curl", "-fIx", "socks5h://127.0.0.1:${SOCKS5_Port}", "https://www.google.com"]
+      start_period: 3s
+      interval: 10s
       timeout: 2s
       retries: 3
-      start_period: 3s
     container_name: ${APP_Name}-ssh
     user: "${USER_UID}:${USER_GID}"
     networks: ["net"]
