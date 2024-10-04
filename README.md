@@ -5,8 +5,9 @@
 #### C01. Solved Problems
 1. Creating a SOCKS5 Proxy Server via SSH Tunnel with Optional Authentication
 - language: Golang
-- package: armon/go-socks5
-- package: golang.org/x/crypto/ssh
+- packages:
+  - github.com/armon/go-socks5
+  - golang.org/x/crypto/ssh
 
 2. DNS Resolver (socksh://)
 - uses the SSH remote command(crypto/ssh.Client.NewSession): dig +short <hostname>
@@ -19,7 +20,7 @@
 - configure healthcheck in docker-compose.yaml
 - use the autoheal project(https://github.com/willfarrell/docker-autoheal)
 
-#### C02. App
+#### C02. Usage
 1. configuration(configs/local.yaml)
 ```yaml
 ssh:
