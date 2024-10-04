@@ -37,6 +37,10 @@ noauth:
 test:
 	curl -k -x 'socks5://hello:world@127.0.0.1:1080' https://icanhazip.com
 
+image-local:
+	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=local DOCKER_Push=false GIT=false \
+	  bash deployments/docker_build.sh dev
+
 image-dev:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=dev DOCKER_Push=false \
 	  bash deployments/docker_build.sh dev
