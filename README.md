@@ -1,8 +1,25 @@
-# socks5 ssh
+# socks5-proxy
 ---
-*local socks5 proxy through ssh*
+*socks5 proxying through*
 
-#### C01. App
+#### C01. Solved Problems
+1. Creating a SOCKS5 Proxy Server via SSH Tunnel with Optional Authentication
+- language: Golang
+- package: armon/go-socks5
+- package: golang.org/x/crypto/ssh
+
+2. DNS Resolver (socksh://)
+- uses the SSH remote command(crypto/ssh.Client.NewSession): dig +short <hostname>
+
+3. Deployments
+- docker, docker-compose
+- make
+
+4. Autoheal
+- configure healthcheck in docker-compose.yaml
+- use the autoheal project(https://github.com/willfarrell/docker-autoheal)
+
+#### C02. App
 1. configuration(configs/local.yaml)
 ```yaml
 ssh:
@@ -37,10 +54,11 @@ make build
 make release
 ```
 
-#### C02. Usage
+#### C03. Applications
 1. commandlines with socks5 proxy
 ```bash
-proxy=socks5://hello:world@127.0.0.1:1080
+# proxy=socks5://hello:world@127.0.0.1:1080
+proxy=socks5h://hello:world@127.0.0.1:1080
 
 https_proxy=$proxy git pull
 https_proxy=$proxy git push
