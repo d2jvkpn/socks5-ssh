@@ -1,11 +1,11 @@
 FROM golang:1-alpine AS builder
 
+LABEL stage=${APP_Name}_builder
+
 ARG APP_Name
 ARG APP_Version
 ARG BUILD_Region
 ARG GO_ldflags
-
-LABEL stage=${APP_Name}_builder
 
 RUN if [ "$BUILD_Region" = "cn" ]; then \
     echo "==> BUILD_Region: $BUILD_Region"; \
@@ -42,6 +42,8 @@ RUN go build -ldflags="-w -s ${GO_ldflags}" -o target/main main.go
 
 ####
 FROM alpine:3
+
+LABEL app=${APP_Name}
 
 ARG APP_Name
 ARG APP_Version
