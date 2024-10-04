@@ -1,6 +1,6 @@
 # socks5-proxy
 ---
-*socks5 proxying through*
+*socks5 proxying through ssh tunnel*
 
 #### C01. Solved Problems
 1. Creating a SOCKS5 Proxy Server via SSH Tunnel with Optional Authentication
