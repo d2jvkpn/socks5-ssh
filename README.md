@@ -55,8 +55,16 @@ make build
 make release
 ```
 
+5. deployment(docker-compose)
+- build image socks5-proxy:dev:
+```bash
+make image-dev
+```
+- create docker-compose.yaml
+see deployments/docker_deploy.sh and deployments/docker_deploy.yaml
+
 #### C03. Applications
-1. commandlines with socks5 proxy
+1. commandlines with socks5 proxying
 ```bash
 # proxy=socks5://hello:world@127.0.0.1:1080
 proxy=socks5h://hello:world@127.0.0.1:1080
@@ -68,7 +76,7 @@ https_proxy=$proxy curl -4 https://icanhazip.com
 curl -x "$proxy" https://icanhazip.com
 ```
 
-2. web browser with sock5 proxy
+2. web browser with sock5 proxying
 (**Neither Firefox nor Chromium supports SOCKS5 with authentication**)
 ```bash
 proxy=socks5h://127.0.0.1:1080
