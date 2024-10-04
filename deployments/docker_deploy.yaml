@@ -5,11 +5,12 @@ services:
     image: ${IMAGE_Name}:${IMAGE_Tag}
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "--head", "--connect-timeout", "1", "-x", "socks5h://127.0.0.1:1080", "https://www.google.com"]
+      # "--connect-timeout", "1"
+      test: ["CMD", "curl", "-fI", "-x", "socks5h://127.0.0.1:${SOCKS5_Port}", "https://www.google.com"]
       interval: 5s
-      timeout: 3s
+      timeout: 2s
       retries: 3
-      start_period: 5s
+      start_period: 3s
     container_name: ${APP_Name}-ssh
     user: "${USER_UID}:${USER_GID}"
     networks: ["net"]
