@@ -102,7 +102,7 @@ func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err er
 	return config, nil
 }
 
-func (self *Proxy) healthz() (err error) {
+func (self *Proxy) healthCheck() (err error) {
 	var session *ssh.Session
 
 	if session, err = self.Client.NewSession(); err != nil {
@@ -124,7 +124,7 @@ func (self *Proxy) healthz() (err error) {
 	return
 }
 
-func (self *Proxy) Healthz() (err error) {
+func (self *Proxy) HealthCheck() (err error) {
 	var (
 		ok     bool
 		count  int
@@ -132,12 +132,12 @@ func (self *Proxy) Healthz() (err error) {
 	)
 
 	count = 3
-	self.ticker = time.NewTicker(2 * time.Second)
+	self.ticker = time.NewTicker(5 * time.Second)
 	logger = self.Logger.Named("proxy")
 
-	healthCheck := func() (err error) {
+	healthCheckN := func() (err error) {
 		for i := 0; i < count; i++ {
-			if err = self.healthz(); err == nil {
+			if err = self.healthCheck(); err == nil {
 				return nil
 			}
 
@@ -155,8 +155,8 @@ func (self *Proxy) Healthz() (err error) {
 				return
 			}
 
-			if err = healthCheck(); err != nil {
-				logger.Error("healthz", zap.Int("count", count), zap.Any("error", err))
+			if err = healthCheckN(); err != nil {
+				logger.Error("healthz_check", zap.Int("count", count), zap.Any("error", err))
 				return err
 			} else {
 				logger.Debug("healthz")

@@ -97,7 +97,7 @@ func RunSSHProxy(args []string) {
 	errCh = make(chan error, 2)
 
 	go func() {
-		errCh <- client.Healthz()
+		errCh <- client.HealthCheck()
 	}()
 
 	go func() {
