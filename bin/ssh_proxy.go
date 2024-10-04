@@ -26,7 +26,7 @@ func RunSSHProxy(args []string) {
 		err     error
 		logger  *slog.Logger
 
-		proxyConfig  *proxy.Proxy
+		client       *proxy.Proxy
 		socks5Config *socks5.Config
 		listener     net.Listener
 		socks5Server *socks5.Server
@@ -70,12 +70,12 @@ func RunSSHProxy(args []string) {
 	}()
 
 	// 2.
-	if proxyConfig, err = proxy.LoadProxy(config, subkey, nil); err != nil {
+	if client, err = proxy.LoadProxy(config, subkey, nil); err != nil {
 		err = fmt.Errorf("Failed to load ssh config: %w", err)
 		return
 	}
 
-	socks5Config = proxyConfig.Socks5Config()
+	socks5Config = client.Socks5Config()
 	if socks5Server, err = socks5.New(socks5Config); err != nil {
 		err = fmt.Errorf("Failed to create SOCKS5 server: %w", err)
 		return
@@ -89,7 +89,7 @@ func RunSSHProxy(args []string) {
 
 	shutdown = func() (err error) {
 		err = errors.Join(err, listener.Close())
-		err = errors.Join(err, proxyConfig.Close())
+		err = errors.Join(err, client.Close())
 		return err
 	}
 
@@ -105,8 +105,8 @@ func RunSSHProxy(args []string) {
 			"config", config,
 			"address", addr,
 			"network", network,
-			"authMethods", proxyConfig.AuthMethods(),
-			"socks5User", proxyConfig.Socks5User,
+			"authMethods", client.AuthMethods(),
+			"socks5User", client.Socks5User,
 		)
 
 		err = socks5Server.Serve(listener)

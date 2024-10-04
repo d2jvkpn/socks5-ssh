@@ -10,6 +10,7 @@ import (
 	"log"
 	"net"
 	"strings"
+	"time"
 
 	"github.com/armon/go-socks5"
 	"github.com/d2jvkpn/gotk"
@@ -30,8 +31,8 @@ type Proxy struct {
 	Socks5User     string `mapstructure:"socks5_user"`
 	Socks5Password string `mapstructure:"socks5_password"`
 
-	*ssh.Client `mapstructure:"-"`
 	Logger      *Logger `mapstructure:"-"`
+	*ssh.Client `mapstructure:"-"`
 }
 
 type Logger struct {
@@ -98,6 +99,77 @@ func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err er
 	}
 
 	return config, nil
+}
+
+func (self *Proxy) healthz() (err error) {
+	var session *ssh.Session
+
+	if session, err = self.Client.NewSession(); err != nil {
+		err = fmt.Errorf("unable to create ssh session: %w", err)
+		return
+	}
+	defer session.Close()
+
+	if _, err = session.StdoutPipe(); err != nil {
+		err = fmt.Errorf("unable to create stdout pipe: %w", err)
+		return
+	}
+
+	if err = session.Start("echo -n"); err != nil {
+		err = fmt.Errorf("unable to run 'echo -n'")
+		return
+	}
+
+	return
+}
+
+func (self *Proxy) Healthz() (ticker *time.Ticker) {
+	var (
+		count  int
+		logger *zap.Logger
+	)
+
+	count = 3
+	ticker = time.NewTicker(2 * time.Second)
+	logger = self.Logger.Named("proxy")
+
+	healthCheck := func() (err error) {
+		for i := 0; i < count; i++ {
+			if err = self.healthz(); err == nil {
+				return nil
+			}
+
+			time.Sleep(100 * time.Millisecond)
+		}
+
+		return err
+	}
+
+	go func() {
+		var (
+			ok  bool
+			err error
+		)
+
+		for {
+			select {
+			case _, ok = <-ticker.C:
+				if !ok {
+					logger.Debug("ticker stopped")
+					return
+				}
+
+				if err = healthCheck(); err != nil {
+					logger.Error("healthz", zap.Int("count", count), zap.Any("error", err))
+					return
+				} else {
+					logger.Debug("healthz")
+				}
+			}
+		}
+	}()
+
+	return ticker
 }
 
 func (self *Proxy) dial() (err error) {
@@ -178,7 +250,7 @@ func (self *Proxy) Resolve(ctx context.Context, name string) (
 
 	defer func() {
 		if err != nil {
-			logger.Error("resolve", zap.String("name", name), zap.Any("error", &err))
+			logger.Error("resolve", zap.String("name", name), zap.Any("error", err))
 		} else {
 			logger.Debug("resolve", zap.String("name", name))
 		}
@@ -200,7 +272,10 @@ func (self *Proxy) Resolve(ctx context.Context, name string) (
 		return
 	}
 
-	bts, err = io.ReadAll(reader)
+	if bts, err = io.ReadAll(reader); err != nil {
+		return
+	}
+
 	ip = net.ParseIP(string(bts))
 
 	return
