@@ -3,8 +3,8 @@ version: '3'
 services:
   ssh:
     image: ${IMAGE_Name}:${IMAGE_Tag}
-    labels: { autoheal: true }
     restart: always
+    labels: { autoheal: true } # work with willfarrell/autoheal
     healthcheck:
       # "--connect-timeout", "2"
       test: ["CMD", "curl", "-fI", "-x", "socks5h://127.0.0.1:${SOCKS5_Port}", "https://www.google.com"]
