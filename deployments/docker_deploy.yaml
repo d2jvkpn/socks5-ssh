@@ -12,11 +12,9 @@ services:
       interval: 10s
       timeout: 2s
       retries: 3
-    container_name: ${APP_Name}-ssh
-    user: "${USER_UID}:${USER_GID}"
     network_mode: host
-    #networks: ["net"]
-    #ports: ["127.0.0.1:${SOCKS5_Port}:${SOCKS5_Port}"]
+    user: "${USER_UID}:${USER_GID}"
+    container_name: ${APP_Name}-ssh
     environment: ["TZ=Asia/Shanghai"]
     working_dir: /app
     volumes:
@@ -27,6 +25,3 @@ services:
     - ssh
     - -config=configs/prod.yaml
     - -addr=:${SOCKS5_Port}
-
-#networks:
-#  net: { name: "local", driver: bridge, external: false }
