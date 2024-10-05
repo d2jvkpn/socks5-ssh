@@ -15,11 +15,11 @@ services:
     network_mode: host
     user: "${USER_UID}:${USER_GID}"
     container_name: ${APP_Name}-ssh
-    environment: ["TZ=Asia/Shanghai"]
-    working_dir: /app
     volumes:
     - ./configs/:/app/configs:ro
     # - ./logs/:/app/logs
+    environment: ["TZ=Asia/Shanghai"]
+    working_dir: /app
     command:
     - ./target/main
     - ssh

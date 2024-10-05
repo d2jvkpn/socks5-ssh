@@ -76,5 +76,4 @@ COPY --from=builder /app/cache.local/build.yaml /app/
 # socks5 port
 EXPOSE 1080
 
-
 CMD [./target/main, ssh, -config=configs/prod.yaml, -addr=:1080]
