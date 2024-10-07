@@ -32,12 +32,6 @@ func main() {
 	command.Project = project
 
 	command.AddCmd(
-		"ssh",
-		"socks5 proxy through ssh",
-		bin.RunSSHProxy,
-	)
-
-	command.AddCmd(
 		"show",
 		"show config(ssh)",
 		func(args []string) {
@@ -51,6 +45,18 @@ func main() {
 			default:
 			}
 		},
+	)
+
+	command.AddCmd(
+		"ssh",
+		"socks5 proxy through ssh",
+		bin.RunSSHProxy,
+	)
+
+	command.AddCmd(
+		"test",
+		"test socks5 proxy",
+		bin.TestProxy,
 	)
 
 	command.Execute(os.Args[1:])
