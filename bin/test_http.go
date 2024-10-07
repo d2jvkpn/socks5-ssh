@@ -52,7 +52,7 @@ func TestProxy(args []string) {
 	if urlProxy, err = url.Parse(proxy); err != nil {
 		return
 	}
-	client = NewClient(urlProxy)
+	client = newClient(urlProxy)
 
 	ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -71,7 +71,7 @@ func TestProxy(args []string) {
 	fmt.Printf("==> response: status_code=%d, body=\n%s\n", response.StatusCode, body)
 }
 
-func NewClient(urlProxy *url.URL) (client *http.Client) {
+func newClient(urlProxy *url.URL) (client *http.Client) {
 	var transport *http.Transport
 
 	transport = &http.Transport{
