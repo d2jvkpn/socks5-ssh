@@ -68,7 +68,7 @@ func TestProxy(args []string) {
 	defer response.Body.Close()
 
 	body, err = ioutil.ReadAll(response.Body)
-	fmt.Printf("==> response:\n%s\n", body)
+	fmt.Printf("==> response: status_code=%d, body=\n%s\n", response.StatusCode, body)
 }
 
 func NewClient(urlProxy *url.URL) (client *http.Client) {
