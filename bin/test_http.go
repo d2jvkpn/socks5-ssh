@@ -76,7 +76,7 @@ func NewClient(urlProxy *url.URL) (client *http.Client) {
 
 	transport = &http.Transport{
 		Proxy:           http.ProxyURL(urlProxy),
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: false},
 		DialContext: (&net.Dialer{
 			Timeout: 2 * time.Second,
 		}).DialContext,
