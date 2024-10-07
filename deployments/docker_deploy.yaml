@@ -6,8 +6,8 @@ services:
     restart: always
     labels: { autoheal: true } # work with willfarrell/autoheal
     healthcheck:
-      # "--connect-timeout", "2"
-      test: ["CMD", "curl", "-fI", "-x", "socks5h://127.0.0.1:${SOCKS5_Port}", "https://www.google.com"]
+      # --connect-timeout 2 --fail
+      test: ["CMD", "curl", "-X", "OPTIONS", "-I", "-x", "socks5h://127.0.0.1:${SOCKS5_Port}", "https://www.google.com"]
       start_period: 5s
       interval: 5s
       timeout: 2s
