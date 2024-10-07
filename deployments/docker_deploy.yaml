@@ -8,10 +8,10 @@ services:
     healthcheck:
       # "--connect-timeout", "2"
       test: ["CMD", "curl", "-fI", "-x", "socks5h://127.0.0.1:${SOCKS5_Port}", "https://www.google.com"]
-      start_period: 3s
-      interval: 10s
+      start_period: 5s
+      interval: 5s
       timeout: 2s
-      retries: 3
+      retries: 2
     network_mode: host
     user: "${USER_UID}:${USER_GID}"
     container_name: ${APP_Name}-ssh

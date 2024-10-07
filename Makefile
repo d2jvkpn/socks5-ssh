@@ -35,7 +35,7 @@ noauth:
 	./target/main ssh -config=configs/local.yaml -subkey=noauth -addr=127.0.0.1:1080
 
 test:
-	curl -k -x 'socks5://hello:world@127.0.0.1:1080' https://icanhazip.com
+	curl -k -x 'socks5h://hello:world@127.0.0.1:1080' https://icanhazip.com
 
 image-local:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=local DOCKER_Push=false GIT=false \
