@@ -20,12 +20,12 @@ func TestProxy(args []string) {
 		urlAddr string
 		fSet    *flag.FlagSet
 
-		urlProxy  *url.URL
-		ctx       context.Context
-		cancel    func()
-		transport *http.Transport
-		client    *http.Client
-		request   *http.Request
+		urlProxy *url.URL
+		ctx      context.Context
+		cancel   func()
+
+		client  *http.Client
+		request *http.Request
 
 		response *http.Response
 		body     []byte
@@ -52,20 +52,7 @@ func TestProxy(args []string) {
 	if urlProxy, err = url.Parse(proxy); err != nil {
 		return
 	}
-
-	transport = &http.Transport{
-		Proxy:           http.ProxyURL(urlProxy),
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		DialContext: (&net.Dialer{
-			Timeout: 2 * time.Second,
-		}).DialContext,
-		ResponseHeaderTimeout: 2 * time.Second,
-	}
-
-	client = &http.Client{
-		Transport: transport,
-		Timeout:   5 * time.Second,
-	}
+	client = NewClient(urlProxy)
 
 	ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -82,4 +69,24 @@ func TestProxy(args []string) {
 
 	body, err = ioutil.ReadAll(response.Body)
 	fmt.Printf("==> response:\n%s\n", body)
+}
+
+func NewClient(urlProxy *url.URL) (client *http.Client) {
+	var transport *http.Transport
+
+	transport = &http.Transport{
+		Proxy:           http.ProxyURL(urlProxy),
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		DialContext: (&net.Dialer{
+			Timeout: 2 * time.Second,
+		}).DialContext,
+		ResponseHeaderTimeout: 2 * time.Second,
+	}
+
+	client = &http.Client{
+		Transport: transport,
+		Timeout:   5 * time.Second,
+	}
+
+	return client
 }
