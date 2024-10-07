@@ -15,18 +15,17 @@ import (
 
 func TestProxy(args []string) {
 	var (
-		err     error
-		proxy   string
-		urlAddr string
-		fSet    *flag.FlagSet
+		err                   error
+		proxy                 string
+		urlAddr               string
+		tlsInsecureSkipVerify bool
+		fSet                  *flag.FlagSet
 
 		urlProxy *url.URL
 		ctx      context.Context
 		cancel   func()
-
-		client  *http.Client
-		request *http.Request
-
+		client   *http.Client
+		request  *http.Request
 		response *http.Response
 		body     []byte
 	)
@@ -35,6 +34,7 @@ func TestProxy(args []string) {
 
 	fSet.StringVar(&proxy, "proxy", "socks5h://127.0.0.1:1080", "proxy address")
 	fSet.StringVar(&urlAddr, "urlAddr", "https://icanhazip.com", "request url")
+	fSet.BoolVar(&tlsInsecureSkipVerify, "tlsInsecureSkipVerify", false, "tls insecure skip verify")
 
 	if err = fSet.Parse(args); err != nil {
 		fmt.Fprintf(os.Stderr, "ssh exit: %v\n", err)
@@ -52,11 +52,11 @@ func TestProxy(args []string) {
 	if urlProxy, err = url.Parse(proxy); err != nil {
 		return
 	}
-	client = newClient(urlProxy)
 
 	ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
+	client = newClient(urlProxy, tlsInsecureSkipVerify)
 	if request, err = http.NewRequestWithContext(ctx, "GET", urlAddr, nil); err != nil {
 		return
 	}
@@ -71,12 +71,12 @@ func TestProxy(args []string) {
 	fmt.Printf("==> response: status_code=%d, body=\n%s\n", response.StatusCode, body)
 }
 
-func newClient(urlProxy *url.URL) (client *http.Client) {
+func newClient(urlProxy *url.URL, tlsInsecureSkipVerify bool) (client *http.Client) {
 	var transport *http.Transport
 
 	transport = &http.Transport{
 		Proxy:           http.ProxyURL(urlProxy),
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: false},
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: tlsInsecureSkipVerify},
 		DialContext: (&net.Dialer{
 			Timeout: 2 * time.Second,
 		}).DialContext,
