@@ -62,10 +62,10 @@ func RunSSHProxy(args []string) {
 
 	defer func() {
 		if err != nil {
-			logger.Error("exit", "error", err)
+			logger.Error("Exit", "error", err)
 			os.Exit(1)
 		} else {
-			logger.Info("exit")
+			logger.Info("Exit")
 		}
 	}()
 
