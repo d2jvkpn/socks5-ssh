@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	//"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
@@ -27,14 +27,19 @@ func TestProxy(args []string) {
 		client   *http.Client
 		request  *http.Request
 		response *http.Response
-		body     []byte
 	)
 
 	fSet = flag.NewFlagSet("proxy", flag.ContinueOnError) // flag.ExitOnError
 
 	fSet.StringVar(&proxy, "proxy", "socks5h://127.0.0.1:1080", "proxy address")
 	fSet.StringVar(&urlAddr, "urlAddr", "https://icanhazip.com", "request url")
-	fSet.BoolVar(&tlsInsecureSkipVerify, "tlsInsecureSkipVerify", false, "tls insecure skip verify")
+
+	fSet.BoolVar(
+		&tlsInsecureSkipVerify,
+		"tlsInsecureSkipVerify",
+		false,
+		"tls insecure skip verify",
+	)
 
 	if err = fSet.Parse(args); err != nil {
 		fmt.Fprintf(os.Stderr, "ssh exit: %v\n", err)
@@ -66,9 +71,11 @@ func TestProxy(args []string) {
 		return
 	}
 	defer response.Body.Close()
+	fmt.Printf("==> status_code: %d\n", response.StatusCode)
 
-	body, err = ioutil.ReadAll(response.Body)
-	fmt.Printf("==> response: status_code=%d, body=\n%s\n", response.StatusCode, body)
+	//var bts []byte
+	//bts, err = ioutil.ReadAll(response.Body)
+	//fmt.Printf("==> response_body:\n%s\n", bts)
 }
 
 func newClient(urlProxy *url.URL, tlsInsecureSkipVerify bool) (client *http.Client) {
@@ -85,7 +92,7 @@ func newClient(urlProxy *url.URL, tlsInsecureSkipVerify bool) (client *http.Clie
 
 	client = &http.Client{
 		Transport: transport,
-		Timeout:   5 * time.Second,
+		Timeout:   3 * time.Second,
 	}
 
 	return client
