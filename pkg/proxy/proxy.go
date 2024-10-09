@@ -288,14 +288,14 @@ func (self *Proxy) Socks5Config() (config *socks5.Config) {
 
 			if err != nil {
 				logger.Warn(
-					"dail",
+					"dial",
 					zap.String("network", network),
 					zap.String("addr", addr),
 					zap.Any("error", err),
 				)
 			} else {
 				logger.Debug(
-					"dail",
+					"dial",
 					zap.String("network", network),
 					zap.String("addr", addr),
 				)

@@ -83,7 +83,7 @@ func RunSSHProxy(args []string) {
 
 	// 3.
 	if listener, err = net.Listen(network, addr); err != nil {
-		err = fmt.Errorf("Failed to dail %s: %w", addr, err)
+		err = fmt.Errorf("Failed to dial %s: %w", addr, err)
 		return
 	}
 

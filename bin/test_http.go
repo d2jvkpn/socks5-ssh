@@ -1,38 +1,31 @@
 package bin
 
 import (
-	"context"
-	"crypto/tls"
 	"flag"
 	"fmt"
 	//"io/ioutil"
-	"net"
 	"net/http"
-	"net/url"
 	"os"
-	"time"
+
+	"github.com/d2jvkpn/socks5-proxy/pkg/proxy"
 )
 
 func TestProxy(args []string) {
 	var (
 		err                   error
-		proxy                 string
+		proxyAddr             string
 		urlAddr               string
 		tlsInsecureSkipVerify bool
 		fSet                  *flag.FlagSet
 
-		urlProxy *url.URL
-		ctx      context.Context
-		cancel   func()
-		client   *http.Client
-		request  *http.Request
-		response *http.Response
+		client     *http.Client
+		statusCode int
 	)
 
 	fSet = flag.NewFlagSet("proxy", flag.ContinueOnError) // flag.ExitOnError
 
-	fSet.StringVar(&proxy, "proxy", "socks5h://127.0.0.1:1080", "proxy address")
-	fSet.StringVar(&urlAddr, "urlAddr", "https://icanhazip.com", "request url")
+	fSet.StringVar(&proxyAddr, "proxy", "socks5h://127.0.0.1:1080", "proxy address")
+	fSet.StringVar(&urlAddr, "url", "https://icanhazip.com", "request url")
 
 	fSet.BoolVar(
 		&tlsInsecureSkipVerify,
@@ -54,46 +47,12 @@ func TestProxy(args []string) {
 		}
 	}()
 
-	if urlProxy, err = url.Parse(proxy); err != nil {
+	if client, err = proxy.NewHttpClient(proxyAddr, tlsInsecureSkipVerify); err != nil {
 		return
 	}
 
-	ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	client = newClient(urlProxy, tlsInsecureSkipVerify)
-	if request, err = http.NewRequestWithContext(ctx, "GET", urlAddr, nil); err != nil {
+	if statusCode, err = proxy.HttpTest(client, "GET", urlAddr); err != nil {
 		return
 	}
-
-	// response, err = client.Get(urlAddr)
-	if response, err = client.Do(request); err != nil {
-		return
-	}
-	defer response.Body.Close()
-	fmt.Printf("==> status_code: %d\n", response.StatusCode)
-
-	//var bts []byte
-	//bts, err = ioutil.ReadAll(response.Body)
-	//fmt.Printf("==> response_body:\n%s\n", bts)
-}
-
-func newClient(urlProxy *url.URL, tlsInsecureSkipVerify bool) (client *http.Client) {
-	var transport *http.Transport
-
-	transport = &http.Transport{
-		Proxy:           http.ProxyURL(urlProxy),
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: tlsInsecureSkipVerify},
-		DialContext: (&net.Dialer{
-			Timeout: 2 * time.Second,
-		}).DialContext,
-		ResponseHeaderTimeout: 2 * time.Second,
-	}
-
-	client = &http.Client{
-		Transport: transport,
-		Timeout:   3 * time.Second,
-	}
-
-	return client
+	fmt.Printf("==> status_code: %d\n", statusCode)
 }
