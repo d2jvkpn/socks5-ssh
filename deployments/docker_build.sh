@@ -110,7 +110,9 @@ docker build --no-cache --file ${_path}/Dockerfile \
 
 docker image prune --force --filter label=stage=${app_name}_builder &> /dev/null
 # docker images --filter "dangling=true" --quiet $image | xargs -i docker rmi {}
-docker images -f "dangling=true" -f label=app=${app_name} --quiet | xargs -i docker rmi {} || true
+for img in $(docker images -f "dangling=true" -f label=app=${app_name} --quiet); do
+    docker rmi $img || true
+done
 
 #### 5. push image
 [ "$DOCKER_Push" != "false" ] && docker push $image
