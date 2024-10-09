@@ -52,7 +52,7 @@ Host remote_host
 	ExitOnForwardFailure yes
 EOF
 
-ssh -NC -F /path/to/ssh/conf -D $address $remote_hosts
+ssh -NC -F /path/to/ssh.conf -D $address $remote_host
 
 exit 0
 proxy=socks5h://127.0.0.1:1081 # proxy=socks5h://username:password@127.0.0.1:1081
