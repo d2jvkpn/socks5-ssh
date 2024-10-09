@@ -21,8 +21,10 @@ func NewHttpClient(proxyAddr string, tlsInsecureSkipVerify bool) (client *http.C
 	}
 
 	transport = &http.Transport{
-		Proxy:           http.ProxyURL(urlProxy),
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: tlsInsecureSkipVerify},
+		Proxy: http.ProxyURL(urlProxy),
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: tlsInsecureSkipVerify,
+		},
 		DialContext: (&net.Dialer{
 			Timeout: 2 * time.Second,
 		}).DialContext,
