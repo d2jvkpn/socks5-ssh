@@ -21,7 +21,7 @@ config=${config:-""}
     exit 0
 }
 
->&2 echo "==> socks5 proxy: remote_host=$remote_host, address=$address"
+>&2 echo "[$(date +%FT%T%:z)] socks5 proxy: remote_host=$remote_host, address=$address, config=$config"
 
 # autossh -f
 # -p 22
