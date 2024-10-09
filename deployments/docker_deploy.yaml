@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  ssh:
+  ${APP_Name}:
     image: ${IMAGE_Name}:${IMAGE_Tag}
     restart: always
     labels: { autoheal: true } # work with willfarrell/autoheal
@@ -13,15 +13,12 @@ services:
       timeout: 2s
       retries: 2
     network_mode: host
-    user: "${USER_UID}:${USER_GID}"
+    # user: "${USER_UID}:${USER_GID}"
     container_name: ${APP_Name}-ssh
     volumes:
     - ./configs/:/app/configs:ro
     # - ./logs/:/app/logs
-    environment: ["TZ=Asia/Shanghai"]
     working_dir: /app
-    command:
-    - ./target/main
-    - ssh
-    - -config=configs/prod.yaml
-    - -addr=:${SOCKS5_Port}
+    environment: ["TZ=Asia/Shanghai", "config=configs/ssh.conf"]
+    command: [./target/main, ssh, -config=configs/prod.yaml, -addr=:${SOCKS5_Port}]
+    # command: [./target/socks5_proxy.sh, remote_host, :${SOCKS5_Port}]
