@@ -23,12 +23,10 @@ config=${config:-""}
 
 >&2 echo "==> socks5 proxy: remote_host=$remote_host, address=$address"
 
-
 # autossh -f
 # -p 22
 # -i ~/.ssh/id_rsa
 # -o "UserKnownHostsFile ~/.ssh/known_hosts"
-
 if [[ ! -z "$config" ]]; then
     ssh -NC -F "$config" -D "$address" "$remote_host"
 else
@@ -39,10 +37,9 @@ else
 fi
 
 exit 0
-
-cat /path/to/ssh/conf <<EOF
+cat /path/to/ssh.conf <<EOF
 Host remote_host
-	ProxyJump another_host
+	#ProxyJump another_host
 	HostName 127.0.0.1
 	User account
 	Port 22
@@ -52,13 +49,12 @@ Host remote_host
 	LogLevel INFO
 	ServerAliveInterval 5
 	ServerAliveCountMax 3
-    ExitOnForwardFailure yes
+	ExitOnForwardFailure yes
 EOF
 
 ssh -NC -F /path/to/ssh/conf -D $address $remote_hosts
 
 exit 0
-
 proxy=socks5h://127.0.0.1:1081 # proxy=socks5h://username:password@127.0.0.1:1081
 
 https_proxy=$proxy git pull
