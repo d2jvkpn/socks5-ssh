@@ -31,30 +31,32 @@ type Proxy struct {
 	Socks5User     string `mapstructure:"socks5_user"`
 	Socks5Password string `mapstructure:"socks5_password"`
 
-	Logger      *Logger `mapstructure:"-"`
+	Logger      *zap.Logger `mapstructure:"-"`
 	*ssh.Client `mapstructure:"-"`
-	ticker      *time.Ticker
+
+	ticker *time.Ticker
 }
 
-type Logger struct {
+type StdLogger struct {
 	*zap.Logger
 }
 
-func NewLogger(lg *zap.Logger) *Logger {
-	return &Logger{Logger: lg}
-}
-
 // implements io.Writer for socks5.Config.Logger
-func (self *Logger) Write(p []byte) (int, error) {
+func (self *StdLogger) Write(p []byte) (int, error) {
 	self.Named("socks5").Log(
 		zapcore.ErrorLevel,
 		fmt.Sprintf("%s", bytes.TrimSpace(p)),
 	)
+
 	return 0, nil
 }
 
-func (self *Logger) StdLogger() *log.Logger {
-	return log.New(self, "", 0)
+func NewStdLogger(lg *zap.Logger) *log.Logger {
+	return log.New(
+		&StdLogger{Logger: lg},
+		"",
+		0,
+	)
 }
 
 func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err error) {
@@ -94,9 +96,9 @@ func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err er
 
 	if logger == nil {
 		lg, _ := gotk.NewZapLogger("", zapcore.InfoLevel, 0)
-		config.Logger = &Logger{Logger: lg.Logger}
+		config.Logger = lg.Logger
 	} else {
-		config.Logger = &Logger{Logger: logger}
+		config.Logger = logger
 	}
 
 	return config, nil
@@ -281,7 +283,7 @@ func (self *Proxy) Socks5Config() (config *socks5.Config) {
 
 	config = &socks5.Config{
 		Resolver: self, // socks5.DNSResolver{},
-		Logger:   self.Logger.StdLogger(),
+		Logger:   NewStdLogger(self.Logger),
 		Dial: func(ctx context.Context, network, addr string) (conn net.Conn, err error) {
 			// println("~~~", network, addr)
 			conn, err = self.Client.Dial(network, addr)
