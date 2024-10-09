@@ -63,17 +63,21 @@ RUN if [ "$BUILD_Region" = "cn" ]; then \
 
 RUN apk --no-cache update && \
   apk --no-cache upgrade && \
-  apk --no-cache add tzdata openssh curl
+  apk --no-cache add tzdata openssh curl bash
   # gcompat
 
 RUN mkdir -p /app/target
 WORKDIR /app
 
 COPY --from=builder /app/target/ /app/target/
+COPY --from=builder /app/bin/socks5_proxy.sh /app/target/
 COPY --from=builder /app/cache.local/build.yaml /app/
 # COPY ./migrations ./migrations
+
+RUN chmod a+x /app/target/socks5_proxy.sh
 
 # socks5 port
 EXPOSE 1080
 
 CMD [./target/main, ssh, -config=configs/prod.yaml, -addr=:1080]
+# CMD [config=configs/ssh.conf, ./target/socks5_proxy.sh, remote_host, :1080]
