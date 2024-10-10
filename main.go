@@ -16,7 +16,7 @@ var (
 	_Project []byte
 
 	//go:embed deployments/docker_deploy.yaml
-	_Depoyment string
+	_Depoyment []byte
 )
 
 func main() {

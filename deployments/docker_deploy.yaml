@@ -14,7 +14,7 @@ services:
       retries: 2
     network_mode: host
     user: "${USER_UID}:${USER_GID}"
-    container_name: ${APP_Name}-ssh
+    container_name: ${APP_Name}
     volumes:
     - ./configs/:/app/configs:ro
     working_dir: /app
