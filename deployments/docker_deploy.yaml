@@ -20,5 +20,24 @@ services:
     working_dir: /app
     environment: ["TZ=Asia/Shanghai"]
     command: [./target/main, ssh, -config=configs/prod.yaml, -addr=127.0.0.1:${SOCKS5_Port}]
-    # Remove the user section when using socks5_proxy.sh 
+
+    # When using socks5_proxy.sh, remove the user section and set config in the environment section
     # command: [./target/socks5_proxy.sh, remote_host, 127.0.0.1:${SOCKS5_Port}]
+
+  autoheal:
+    image: willfarrell/autoheal
+    restart: always
+    network_mode: host
+    # networks: ["net"]
+    container_name: autoheal
+    environment:
+    # - AUTOHEAL_CONTAINER_LABEL=all
+    - AUTOHEAL_CONTAINER_LABEL=autoheal
+    - AUTOHEAL_INTERVAL=5
+    - AUTOHEAL_START_PERIOD=0
+    - AUTOHEAL_DEFAULT_STOP_TIMEOUT=5
+    - AUTOHEAL_ONLY_MONITOR_RUNNING=false
+    - CURL_TIMEOUT=5
+    - WEBHOOK_URL=""
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
