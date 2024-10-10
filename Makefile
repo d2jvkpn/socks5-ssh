@@ -33,7 +33,6 @@ ssh_proxy:
 socks5_proxy:
 	config=configs/ssh.conf ./bin/socks5_proxy.sh remote_host 127.0.0.1:1081
 
-
 noauth:
 	make build
 	./target/main ssh -config=configs/local.yaml -subkey=noauth -addr=127.0.0.1:1081
