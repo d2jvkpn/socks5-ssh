@@ -31,7 +31,8 @@ type Proxy struct {
 	Socks5User     string `mapstructure:"socks5_user"`
 	Socks5Password string `mapstructure:"socks5_password"`
 
-	Logger      *zap.Logger `mapstructure:"-"`
+	Viper       *viper.Viper `mapstructure:"-"`
+	Logger      *zap.Logger  `mapstructure:"-"`
 	*ssh.Client `mapstructure:"-"`
 
 	ticker *time.Ticker
@@ -73,6 +74,7 @@ func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err er
 	}
 
 	config = new(Proxy)
+	config.Viper = vp
 
 	// err = vp.Unmarshal(config)
 	if err = vp.UnmarshalKey(key, config); err != nil {
