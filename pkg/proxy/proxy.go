@@ -10,7 +10,6 @@ import (
 	"log"
 	"net"
 	"strings"
-	"time"
 
 	"github.com/armon/go-socks5"
 	"github.com/d2jvkpn/gotk"
@@ -34,8 +33,6 @@ type Proxy struct {
 	Viper       *viper.Viper `mapstructure:"-"`
 	Logger      *zap.Logger  `mapstructure:"-"`
 	*ssh.Client `mapstructure:"-"`
-
-	ticker *time.Ticker
 }
 
 type StdLogger struct {
@@ -53,11 +50,7 @@ func (self *StdLogger) Write(p []byte) (int, error) {
 }
 
 func NewStdLogger(lg *zap.Logger) *log.Logger {
-	return log.New(
-		&StdLogger{Logger: lg},
-		"",
-		0,
-	)
+	return log.New(&StdLogger{Logger: lg}, "", 0)
 }
 
 func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err error) {
@@ -104,69 +97,6 @@ func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err er
 	}
 
 	return config, nil
-}
-
-func (self *Proxy) healthCheck() (err error) {
-	var session *ssh.Session
-
-	if session, err = self.Client.NewSession(); err != nil {
-		err = fmt.Errorf("unable to create ssh session: %w", err)
-		return
-	}
-	defer session.Close()
-
-	if _, err = session.StdoutPipe(); err != nil {
-		err = fmt.Errorf("unable to create stdout pipe: %w", err)
-		return
-	}
-
-	if err = session.Start("echo -n"); err != nil {
-		err = fmt.Errorf("unable to run 'echo -n'")
-		return
-	}
-
-	return
-}
-
-func (self *Proxy) HealthCheck() (err error) {
-	var (
-		ok     bool
-		count  int
-		logger *zap.Logger
-	)
-
-	count = 3
-	self.ticker = time.NewTicker(5 * time.Second)
-	logger = self.Logger.Named("proxy")
-
-	healthCheckN := func() (err error) {
-		for i := 0; i < count; i++ {
-			if err = self.healthCheck(); err == nil {
-				return nil
-			}
-
-			time.Sleep(100 * time.Millisecond)
-		}
-
-		return err
-	}
-
-	for {
-		select {
-		case _, ok = <-self.ticker.C:
-			if !ok {
-				logger.Debug("ticker stopped")
-				return
-			}
-
-			if err = healthCheckN(); err != nil {
-				logger.Error("healthz_check", zap.Int("count", count), zap.Any("error", err))
-				return err
-			} else {
-				logger.Debug("healthz")
-			}
-		}
-	}
 }
 
 func (self *Proxy) dial() (err error) {
@@ -325,10 +255,6 @@ func (self *Proxy) Socks5Config() (config *socks5.Config) {
 func (self *Proxy) Close() (err error) {
 	if self == nil {
 		return
-	}
-
-	if self.ticker != nil {
-		self.ticker.Stop()
 	}
 
 	if self.Client != nil {
