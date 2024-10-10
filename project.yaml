@@ -35,8 +35,8 @@ socks5_proxy: |
         IdentityFile configs/ssh.key
         # UserKnownHostsFile ~/.ssh/known_hosts
         UserKnownHostsFile configs/known_hosts
+        LogLevel    INFO
         Compression yes
-        LogLevel INFO
         ServerAliveInterval 5
         ServerAliveCountMax 3
         ExitOnForwardFailure yes
