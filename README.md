@@ -47,7 +47,7 @@ make build
 
 3. run
 ```bash
-./target/main ssh -config=configs/local.yaml -addr=127.0.0.1:1080
+./target/main ssh -config=configs/local.yaml -addr=127.0.0.1:1081
 ```
 
 4. release
@@ -66,8 +66,8 @@ see deployments/docker_deploy.sh and deployments/docker_deploy.yaml
 #### C03. Applications
 1. commandlines with socks5 proxying
 ```bash
-# proxy=socks5://hello:world@127.0.0.1:1080
-proxy=socks5h://hello:world@127.0.0.1:1080
+# proxy=socks5://hello:world@127.0.0.1:1081
+proxy=socks5h://hello:world@127.0.0.1:1081
 
 https_proxy=$proxy git pull
 https_proxy=$proxy git push
@@ -79,7 +79,7 @@ curl -x "$proxy" https://icanhazip.com
 2. web browser with sock5 proxying
 (**Neither Firefox nor Chromium supports SOCKS5 with authentication**)
 ```bash
-proxy=socks5h://127.0.0.1:1080
+proxy=socks5h://127.0.0.1:1081
 
 chromium --disable-extensions --incognito --proxy-server="$proxy"
 

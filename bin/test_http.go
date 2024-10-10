@@ -24,7 +24,7 @@ func TestProxy(args []string) {
 
 	fSet = flag.NewFlagSet("proxy", flag.ContinueOnError) // flag.ExitOnError
 
-	fSet.StringVar(&proxyAddr, "proxy", "socks5h://127.0.0.1:1080", "proxy address")
+	fSet.StringVar(&proxyAddr, "proxy", "socks5h://127.0.0.1:1081", "proxy address")
 	fSet.StringVar(&urlAddr, "url", "https://icanhazip.com", "request url")
 
 	fSet.BoolVar(

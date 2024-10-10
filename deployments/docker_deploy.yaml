@@ -13,12 +13,12 @@ services:
       timeout: 2s
       retries: 2
     network_mode: host
-    # user: "${USER_UID}:${USER_GID}"
+    user: "${USER_UID}:${USER_GID}"
     container_name: ${APP_Name}-ssh
     volumes:
     - ./configs/:/app/configs:ro
-    # - ./logs/:/app/logs
     working_dir: /app
-    environment: ["TZ=Asia/Shanghai", "config=configs/ssh.conf"]
+    environment: ["TZ=Asia/Shanghai"]
     command: [./target/main, ssh, -config=configs/prod.yaml, -addr=:${SOCKS5_Port}]
+    # Remove the user section when using socks5_proxy.sh 
     # command: [./target/socks5_proxy.sh, remote_host, :${SOCKS5_Port}]

@@ -4,7 +4,7 @@ authors: ["d2jvkpn <d2jvkpn@noreply.local>"]
 repository: git@github.com:d2jvkpn/socks5-proxy.git
 image_name: socks5-proxy
 
-ssh_config: |
+ssh_proxy: |
   ##### location: configs/local.yaml
 
   ssh:
@@ -22,3 +22,21 @@ ssh_config: |
     ssh_password: password
     ssh_private_key: /home/account/.ssh/id_rsa
     ssh_known_hosts: /home/account/.ssh/known_hosts
+
+socks5_proxy: |
+    ##### location: configs/ssh.conf
+
+    Host remote_host
+        # ProxyJump another_host
+        HostName 127.0.0.1
+        User account
+        Port 22
+        # IdentityFile ~/.ssh/id_rsa
+        IdentityFile configs/key.ssh
+        # UserKnownHostsFile ~/.ssh/known_hosts
+        UserKnownHostsFile configs/known_hosts
+        Compression yes
+        LogLevel INFO
+        ServerAliveInterval 5
+        ServerAliveCountMax 3
+        ExitOnForwardFailure yes

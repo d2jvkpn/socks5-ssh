@@ -26,16 +26,20 @@ release:
 	release=true deployments/go_build.sh
 	ls -al target
 
-ssh:
+ssh_proxy:
 	make build
-	./target/main ssh -config=configs/local.yaml -addr=127.0.0.1:1080
+	./target/main ssh -config=configs/local.yaml -addr=127.0.0.1:1081
+
+socks5_proxy:
+	config=configs/ssh.conf ./bin/socks5_proxy.sh remote_host 127.0.0.1:1081
+
 
 noauth:
 	make build
-	./target/main ssh -config=configs/local.yaml -subkey=noauth -addr=127.0.0.1:1080
+	./target/main ssh -config=configs/local.yaml -subkey=noauth -addr=127.0.0.1:1081
 
 test:
-	curl -k -x 'socks5h://hello:world@127.0.0.1:1080' https://icanhazip.com
+	curl -k -x 'socks5h://hello:world@127.0.0.1:1081' https://icanhazip.com
 
 image-local:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=local DOCKER_Push=false GIT=false \
