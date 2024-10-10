@@ -19,6 +19,6 @@ services:
     - ./configs/:/app/configs:ro
     working_dir: /app
     environment: ["TZ=Asia/Shanghai"]
-    command: [./target/main, ssh, -config=configs/prod.yaml, -addr=:${SOCKS5_Port}]
+    command: [./target/main, ssh, -config=configs/prod.yaml, -addr=127.0.0.1:${SOCKS5_Port}]
     # Remove the user section when using socks5_proxy.sh 
-    # command: [./target/socks5_proxy.sh, remote_host, :${SOCKS5_Port}]
+    # command: [./target/socks5_proxy.sh, remote_host, 127.0.0.1:${SOCKS5_Port}]
