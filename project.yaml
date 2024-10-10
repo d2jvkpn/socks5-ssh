@@ -40,3 +40,22 @@ socks5_proxy: |
         ServerAliveInterval 5
         ServerAliveCountMax 3
         ExitOnForwardFailure yes
+
+proxy_pac: |
+  // location: proxy.pac
+
+  function FindProxyForURL(url, host) {
+    if (isPlainHostName(host) || shExpMatch(host, "*.local")) {
+      return "DIRECT";
+    }
+
+    if (shExpMatch(host, "*.a.example.com")) {
+      return "PROXY proxy.example.com:8080";
+    } else if (shExpMatch(host, "*.b.example.com")) {
+      return "PROXY proxy1.example.com:8080; PROXY proxy2.example.com:8080";
+    } else if (shExpMatch(host, "*.c.example.com")) {
+      return "PROXY proxy3.example.com:8080; DIRECT";
+    }
+
+    return "DIRECT";
+  }

@@ -35,9 +35,9 @@ func main() {
 	command.Project = project
 
 	command.AddCmd(
-		"config", "show config(ssh_proxy, socks5_proxy)",
+		"config", "show config(ssh_proxy, socks5_proxy, proxy_pac, deployment)",
 		func(args []string) {
-			errMsg := "Subcommand is required: ssh_proxy | socks5_proxy | deployment\n"
+			errMsg := "Subcommand is required: ssh_proxy | socks5_proxy | proxy_pac | deployment\n"
 
 			if len(args) == 0 {
 				fmt.Fprintf(os.Stderr, errMsg)
@@ -46,10 +46,8 @@ func main() {
 			}
 
 			switch args[0] {
-			case "ssh_proxy":
-				fmt.Printf("%s\n", command.Project.GetString("ssh_proxy"))
-			case "socks5_proxy":
-				fmt.Printf("%s\n", command.Project.GetString("socks5_proxy"))
+			case "ssh_proxy", "socks5_proxy", "proxy_pac":
+				fmt.Printf("%s\n", command.Project.GetString(args[0]))
 			case "deployment":
 				fmt.Printf("%s\n", _Depoyment)
 			default:
