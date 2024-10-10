@@ -32,7 +32,7 @@ socks5_proxy: |
         User account
         Port 22
         # IdentityFile ~/.ssh/id_rsa
-        IdentityFile configs/key.ssh
+        IdentityFile configs/ssh.key
         # UserKnownHostsFile ~/.ssh/known_hosts
         UserKnownHostsFile configs/known_hosts
         Compression yes
