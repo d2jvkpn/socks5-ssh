@@ -27,7 +27,6 @@ function FindProxyForURL(url, host) {
     return "DIRECT";
   }
 
-  /*
   if (shExpMatch(host, "*.a.example.com")) {
     return "PROXY a.proxy.domain:8080";
   } else if (shExpMatch(host, "*.b.example.com")) {
@@ -35,9 +34,6 @@ function FindProxyForURL(url, host) {
   } else if (shExpMatch(host, "*.c.example.com")) {
     return "SOCKS5 127.0.0.1:1080; SOCKS5H 127.0.0.1:1081; DIRECT";
   }
-
-  return "DIRECT";
-  */
 
   var proxies = [
     "SOCKS5 127.0.0.1:1080",
