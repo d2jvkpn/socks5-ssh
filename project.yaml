@@ -1,5 +1,5 @@
 app_name: socks5-proxy
-app_version: 1.0.0
+app_version: 1.0.1
 authors: ["d2jvkpn <d2jvkpn@noreply.local>"]
 repository: git@github.com:d2jvkpn/socks5-proxy.git
 image_name: socks5-proxy
