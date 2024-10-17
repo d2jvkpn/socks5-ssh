@@ -8,7 +8,8 @@ ssh_proxy: |
   ##### location: configs/local.yaml
 
   ssh:
-    ssh_address: remote_host:22
+    ssh_host: remote_host
+    ssh_port: 22
     ssh_user: account
     ssh_password: password
     ssh_private_key: /home/account/.ssh/id_rsa

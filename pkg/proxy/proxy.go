@@ -21,7 +21,8 @@ import (
 )
 
 type Proxy struct {
-	SSH_Address    string `mapstructure:"ssh_address"`
+	SSH_Host       string `mapstructure:"ssh_host"`
+	SSH_Port       int    `mapstructure:"ssh_port"`
 	SSH_User       string `mapstructure:"ssh_user"`
 	SSH_Password   string `mapstructure:"ssh_password"`
 	SSH_PrivateKey string `mapstructure:"ssh_private_key"`
@@ -73,9 +74,10 @@ func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err er
 	if err = vp.UnmarshalKey(key, config); err != nil {
 		return nil, fmt.Errorf("unmarshal config: %w", err)
 	}
+	vp.SetDefault("ssh_port", 22)
 
-	if config.SSH_Address == "" || config.SSH_User == "" {
-		return nil, fmt.Errorf("ssh_address or ssh_user is empty")
+	if config.SSH_Host == "" || config.SSH_User == "" {
+		return nil, fmt.Errorf("ssh_host or ssh_user is empty")
 	}
 
 	switch {
@@ -139,7 +141,12 @@ func (self *Proxy) dial() (err error) {
 
 	config.Auth = auths
 
-	if self.Client, err = ssh.Dial("tcp", self.SSH_Address, config); err != nil {
+	self.Client, err = ssh.Dial(
+		"tcp",
+		fmt.Sprintf("%s:%d", self.SSH_Host, self.SSH_Port),
+		config,
+	)
+	if err != nil {
 		return fmt.Errorf("dial: %w", err)
 	}
 
