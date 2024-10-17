@@ -25,6 +25,7 @@ ADD ./main.go ./go.mod ./go.sum ./project.yaml ./
 COPY ./pkg ./pkg
 COPY ./proto ./proto
 COPY ./bin ./bin
+COPY ./deployments ./deployments
 
 COPY ./cache.local ./cache.local
 
