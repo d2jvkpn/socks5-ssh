@@ -118,8 +118,10 @@ func (self *Proxy) dial() (err error) {
 
 	config = &ssh.ClientConfig{User: self.SSH_User}
 
+	// TODO: ssh-keyscan -p port host
 	if self.SSH_KnownHosts != "" {
-		if config.HostKeyCallback, err = knownhosts.New(self.SSH_KnownHosts); err != nil {
+		config.HostKeyCallback, err = knownhosts.New(self.SSH_KnownHosts)
+		if err != nil {
 			return fmt.Errorf("loading known hosts: %w", err)
 		}
 	} else {
@@ -192,27 +194,27 @@ func (self *Proxy) Resolve(ctx context.Context, name string) (
 
 	if session, err = self.Client.NewSession(); err != nil {
 		err = fmt.Errorf("unable to create ssh session: %w", err)
-		return
+		return ctx, ip, err
 	}
 	defer session.Close()
 
 	if reader, err = session.StdoutPipe(); err != nil {
 		err = fmt.Errorf("unable to create stdout pipe: %w", err)
-		return
+		return ctx, ip, err
 	}
 
 	if err = session.Start(fmt.Sprintf("dig +short %s", name)); err != nil {
-		err = fmt.Errorf("unable to run dig +short: %w", err)
-		return
+		err = fmt.Errorf("unable to run dig +short: %s, %w", name, err)
+		return ctx, ip, err
 	}
 
 	if bts, err = io.ReadAll(reader); err != nil {
-		return
+		return ctx, ip, err
 	}
 
 	ip = net.ParseIP(string(bts))
 
-	return
+	return ctx, ip, err
 }
 
 func (self *Proxy) Socks5Config() (config *socks5.Config) {
@@ -221,7 +223,7 @@ func (self *Proxy) Socks5Config() (config *socks5.Config) {
 	logger = self.Logger.Named("proxy")
 
 	config = &socks5.Config{
-		Resolver: self, // socks5.DNSResolver{},
+		Resolver: self, // default: socks5.DNSResolver{},
 		Logger:   NewStdLogger(self.Logger),
 		Dial: func(ctx context.Context, network, addr string) (conn net.Conn, err error) {
 			// println("~~~", network, addr)
