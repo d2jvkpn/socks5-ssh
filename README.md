@@ -24,7 +24,8 @@
 1. configuration(configs/local.yaml)
 ```yaml
 ssh:
-  ssh_address: remote_host:22
+  ssh_host: remote_host
+  ssh_port: 22
   ssh_user: account
   ssh_password: password
   ssh_private_key: /home/account/.ssh/id_rsa
@@ -33,7 +34,8 @@ ssh:
   socks5_password: world
 
 noauth:
-  ssh_address: remote_host:22
+  ssh_host: remote_host
+  ssh_port: 22
   ssh_user: account
   ssh_password: password
   ssh_private_key: /home/account/.ssh/id_rsa
