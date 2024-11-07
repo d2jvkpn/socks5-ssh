@@ -17,8 +17,8 @@ services:
     container_name: ${APP_Name}
     volumes:
     - ./configs/:/app/configs:ro
-    working_dir: /app
     environment: ["TZ=Asia/Shanghai"]
+    working_dir: /app
     command: [./target/main, ssh, -config=configs/prod.yaml, -addr=127.0.0.1:${SOCKS5_Port}]
 
     # When using socks5_proxy.sh, remove the user section and set config in the environment section
