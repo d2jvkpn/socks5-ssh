@@ -88,3 +88,10 @@ chromium --disable-extensions --incognito --proxy-server="$proxy"
 # mannual config proxy in settings of firefox
 firefox -p proxy
 ```
+
+#### C04. Run an openvpn client in container and expose a sock5 proxy
+1. config and debug
+- _supervisor.sh
+
+2. deployment
+- deployments/supervisord.compose.yaml
