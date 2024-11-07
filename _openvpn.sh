@@ -35,12 +35,12 @@ nodaemon=true
 [include]
 # files = /etc/supervisor.d/*.ini
 # relative paths to configs/supervisord.conf
-files = *.supervisor.ini
+files = supervisor.ini
 EOF
 
 exit
-cat configs/apps.supervisor.ini <<EOF
-# path: /etc/supervisor.d/app.ini
+cat configs/supervisor.ini <<EOF
+# path: /etc/supervisor.d/*.ini
 [program:http_server]
 command=python3 -m http.server 8080
 autostart=true
