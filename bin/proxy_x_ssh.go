@@ -16,7 +16,7 @@ import (
 	"github.com/d2jvkpn/gotk"
 )
 
-func RunSSHProxy(args []string) {
+func RunProxyXSSH(args []string) {
 	var (
 		fSet    *flag.FlagSet
 		config  string
@@ -26,7 +26,7 @@ func RunSSHProxy(args []string) {
 		err     error
 		logger  *slog.Logger
 
-		client       *proxy.Proxy
+		client       *proxy.ProxyXSSH
 		socks5Config *socks5.Config
 		listener     net.Listener
 		socks5Server *socks5.Server
@@ -47,7 +47,7 @@ func RunSSHProxy(args []string) {
 
 	fSet.Usage = func() {
 		output := flag.CommandLine.Output()
-		fmt.Fprintf(output, "Usage of proxy:\n")
+		fmt.Fprintf(output, "Usage of proxy through ssh:\n")
 		fSet.PrintDefaults()
 	}
 
@@ -100,7 +100,7 @@ func RunSSHProxy(args []string) {
 		var err error
 
 		logger.Info(
-			"Starting SOCKS5 proxying",
+			"Starting SOCKS5 proxying through ssh",
 			"command", "ssh",
 			"config", config,
 			"address", addr,

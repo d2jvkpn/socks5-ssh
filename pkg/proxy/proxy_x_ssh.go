@@ -1,13 +1,11 @@
 package proxy
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net"
 	"strings"
 
@@ -20,7 +18,7 @@ import (
 	"golang.org/x/crypto/ssh/knownhosts"
 )
 
-type Proxy struct {
+type ProxyXSSH struct {
 	SSH_Host       string `mapstructure:"ssh_host"`
 	SSH_Port       int    `mapstructure:"ssh_port"`
 	SSH_User       string `mapstructure:"ssh_user"`
@@ -36,25 +34,8 @@ type Proxy struct {
 	*ssh.Client `mapstructure:"-"`
 }
 
-type StdLogger struct {
-	*zap.Logger
-}
-
-// implements io.Writer for socks5.Config.Logger
-func (self *StdLogger) Write(p []byte) (int, error) {
-	self.Named("socks5").Log(
-		zapcore.ErrorLevel,
-		fmt.Sprintf("%s", bytes.TrimSpace(p)),
-	)
-
-	return 0, nil
-}
-
-func NewStdLogger(lg *zap.Logger) *log.Logger {
-	return log.New(&StdLogger{Logger: lg}, "", 0)
-}
-
-func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err error) {
+func LoadProxy(fp string, key string, logger *zap.Logger) (
+	config *ProxyXSSH, err error) {
 	var vp *viper.Viper
 
 	vp = viper.New()
@@ -67,7 +48,7 @@ func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err er
 		return nil, fmt.Errorf("read config: %w", err)
 	}
 
-	config = new(Proxy)
+	config = new(ProxyXSSH)
 	config.Viper = vp
 
 	// err = vp.Unmarshal(config)
@@ -101,7 +82,7 @@ func LoadProxy(fp string, key string, logger *zap.Logger) (config *Proxy, err er
 	return config, nil
 }
 
-func (self *Proxy) dial() (err error) {
+func (self *ProxyXSSH) dial() (err error) {
 	var (
 		config *ssh.ClientConfig
 		signer ssh.Signer
@@ -156,7 +137,7 @@ func (self *Proxy) dial() (err error) {
 }
 
 // ssh auth methods
-func (self *Proxy) AuthMethods() string {
+func (self *ProxyXSSH) AuthMethods() string {
 	var methods []string
 
 	methods = make([]string, 0)
@@ -172,7 +153,7 @@ func (self *Proxy) AuthMethods() string {
 	return strings.Join(methods, ",")
 }
 
-func (self *Proxy) Resolve(ctx context.Context, name string) (
+func (self *ProxyXSSH) Resolve(ctx context.Context, name string) (
 	c context.Context, ip net.IP, err error) {
 
 	var (
@@ -217,7 +198,7 @@ func (self *Proxy) Resolve(ctx context.Context, name string) (
 	return ctx, ip, err
 }
 
-func (self *Proxy) Socks5Config() (config *socks5.Config) {
+func (self *ProxyXSSH) Socks5Config() (config *socks5.Config) {
 	var logger *zap.Logger
 
 	logger = self.Logger.Named("proxy")
@@ -225,7 +206,8 @@ func (self *Proxy) Socks5Config() (config *socks5.Config) {
 	config = &socks5.Config{
 		Resolver: self, // default: socks5.DNSResolver{},
 		Logger:   NewStdLogger(self.Logger),
-		Dial: func(ctx context.Context, network, addr string) (conn net.Conn, err error) {
+		Dial: func(ctx context.Context, network, addr string) (
+			conn net.Conn, err error) {
 			// println("~~~", network, addr)
 			conn, err = self.Client.Dial(network, addr)
 
@@ -261,7 +243,7 @@ func (self *Proxy) Socks5Config() (config *socks5.Config) {
 	return config
 }
 
-func (self *Proxy) Close() (err error) {
+func (self *ProxyXSSH) Close() (err error) {
 	if self == nil {
 		return
 	}

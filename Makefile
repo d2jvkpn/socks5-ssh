@@ -26,9 +26,13 @@ release:
 	release=true deployments/go_build.sh
 	ls -al target
 
-ssh_proxy:
+ssh:
 	make build
 	./target/main ssh -config=configs/local.yaml -addr=127.0.0.1:1081
+
+server:
+	make build
+	./target/main server -addr=127.0.0.1:1091
 
 socks5_proxy:
 	config=configs/ssh.conf ./bin/socks5_proxy.sh remote_host 127.0.0.1:1081

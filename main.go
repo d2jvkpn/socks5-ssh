@@ -82,7 +82,12 @@ func main() {
 
 	command.AddCmd(
 		"ssh", "socks5 proxy through ssh",
-		bin.RunSSHProxy,
+		bin.RunProxyXSSH,
+	)
+
+	command.AddCmd(
+		"server", "socks5 proxy server",
+		bin.RunProxyServer,
 	)
 
 	command.AddCmd(
