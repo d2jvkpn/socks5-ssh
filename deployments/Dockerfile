@@ -64,7 +64,7 @@ RUN if [ "$BUILD_Region" = "cn" ]; then \
 
 RUN apk --no-cache update && \
   apk --no-cache upgrade && \
-  apk --no-cache add tzdata openssh curl bash
+  apk --no-cache add tzdata curl bash openssh openvpn supervisor
   # gcompat
 
 RUN mkdir -p /app/target
