@@ -63,4 +63,7 @@ curl -x $proxy https://icanhazip.com
 
 # neither firefox or chromium support socks5 with auth
 chromium --disable-extensions --incognito --proxy-server="$proxy"
+
 firefox -p proxy
+
+https_proxy=$proxy remmina
