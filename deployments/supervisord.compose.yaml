@@ -17,4 +17,4 @@ services:
     - ./logs/:/app/logs
     environment: ["TZ=Asia/Shanghai"]
     working_dir: /app
-    command: ["supervisord", "-c", "configs/supervisord.conf"]
+    command: ["supervisord", "-l", "logs/supervisord.log", "-c", "configs/supervisord.conf"]
