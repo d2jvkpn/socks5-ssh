@@ -32,4 +32,7 @@ configs/
 data/
 logs/
 site/
-docker-compose.*
+docker-compose.yaml
+docker-compose.yml
+compose.yaml
+compose.yml

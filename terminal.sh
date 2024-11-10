@@ -4,6 +4,6 @@ _wd=$(pwd); _path=$(dirname $0 | xargs -i readlink -f {})
 
 cd ${_path}
 
-container=$(yq .services.socks5-openvpn.container_name docker-compose.yaml)
+container=$(yq .services.socks5-openvpn.container_name compose.yaml)
 
 docker exec -it $container bash

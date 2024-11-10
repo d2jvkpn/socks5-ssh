@@ -15,8 +15,8 @@ var (
 	//go:embed project.yaml
 	_Project []byte
 
-	//go:embed deployments/docker_deploy.yaml
-	_DockerDeploy []byte
+	//go:embed deployments/compose.template.yaml
+	_Compose []byte
 	//go:embed deployments/proxy.pac
 	_ProxyPac []byte
 )
@@ -71,8 +71,8 @@ func main() {
 			switch args[0] {
 			case "proxy_pac":
 				fmt.Printf("%s\n", _ProxyPac)
-			case "docker-compose":
-				fmt.Printf("%s\n", _DockerDeploy)
+			case "compose":
+				fmt.Printf("%s\n", _Compose)
 			default:
 				fmt.Fprintf(os.Stderr, errMsg)
 				os.Exit(1)

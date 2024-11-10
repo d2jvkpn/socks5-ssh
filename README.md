@@ -17,7 +17,7 @@
 - make
 
 4. Autoheal
-- configure healthcheck in docker-compose.yaml
+- configure healthcheck in compose.yaml
 - use the autoheal project(https://github.com/willfarrell/docker-autoheal)
 
 #### C02. Usage
@@ -62,8 +62,8 @@ make release
 ```bash
 make image-dev
 ```
-- create docker-compose.yaml
-see deployments/docker_deploy.sh and deployments/docker_deploy.yaml
+- create compose.yaml
+see deployments/compose.sh and deployments/compose.template.yaml
 
 #### C03. Applications
 1. commandlines with socks5 proxying

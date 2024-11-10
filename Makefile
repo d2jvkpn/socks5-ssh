@@ -46,8 +46,8 @@ test:
 
 image-local:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=local DOCKER_Push=false GIT=false \
-	  bash deployments/docker_build.sh dev
+	  bash deployments/build_image.sh dev
 
 image-dev:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=dev DOCKER_Push=false \
-	  bash deployments/docker_build.sh dev
+	  bash deployments/build_image.sh dev
