@@ -66,7 +66,7 @@ RUN apk --no-cache update && \
   apk --no-cache upgrade && \
   apk --no-cache add tzdata curl bash openssh \
   openvpn supervisor \
-  gcompat bind-tools inetutils-traceroute \
+  gcompat bind-tools traceroute \
   expect sshpass ansible
 
 RUN mkdir -p /app/target
