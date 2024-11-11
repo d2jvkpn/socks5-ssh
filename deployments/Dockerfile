@@ -65,7 +65,9 @@ RUN if [ "$BUILD_Region" = "cn" ]; then \
 RUN apk --no-cache update && \
   apk --no-cache upgrade && \
   apk --no-cache add tzdata curl bash openssh \
-  openvpn supervisor bind-tools traceroute gcompat
+  openvpn supervisor \
+  gcompat bind-tools inetutils-traceroute \
+  expect sshpass ansible
 
 RUN mkdir -p /app/target
 WORKDIR /app
