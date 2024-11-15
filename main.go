@@ -17,7 +17,7 @@ var (
 
 	//go:embed deployments/compose.template.yaml
 	_Compose []byte
-	//go:embed examples/proxy_multiply.pac
+	//go:embed deployments/proxy.pac
 	_ProxyPac []byte
 )
 

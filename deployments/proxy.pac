@@ -27,6 +27,16 @@ function FindProxyForURL(url, host) {
     return "DIRECT";
   }
 
+  // white list
+  let websites = ["example1.com", "example2.com"];
+
+  for (let i = 0; i < websites.length; i++) {
+    if (dnsDomainIs(host, websites[i])) {
+      return "SOCKS5 localhost:1080";
+    }
+  }
+
+  // regular expression
   if (shExpMatch(host, "*.a.example.com")) {
     return "PROXY a.proxy.domain:8080";
   } else if (shExpMatch(host, "*.b.example.com")) {
@@ -35,6 +45,7 @@ function FindProxyForURL(url, host) {
     return "SOCKS5 127.0.0.1:1080; SOCKS5H 127.0.0.1:1081; DIRECT";
   }
 
+  // simple loadbalancer
   var proxies = [
     "SOCKS5 127.0.0.1:1080",
     "SOCKS5 127.0.0.1:1081",
