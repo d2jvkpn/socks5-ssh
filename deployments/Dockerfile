@@ -68,6 +68,8 @@ RUN apk --no-cache update && \
   openvpn supervisor \
   gcompat bind-tools traceroute \
   expect sshpass
+# ansible nmap
+
 
 RUN mkdir -p /app/target
 WORKDIR /app
