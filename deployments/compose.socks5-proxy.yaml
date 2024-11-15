@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  ${APP_Name}:
+  socks5-proxy:
     image: ${IMAGE_Name}:${IMAGE_Tag}
     restart: always
     labels: { autoheal: true } # work with willfarrell/autoheal
