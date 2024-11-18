@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 func RunFileServer(args []string) {
@@ -47,6 +49,11 @@ func RunFileServer(args []string) {
 		}
 	}()
 
+	if dir, err = filepath.Abs(dir); err != nil {
+		err = fmt.Errorf("Can't get absolute path of %s", dir)
+		return
+	}
+
 	if _, err = os.Stat(dir); os.IsNotExist(err) {
 		err = fmt.Errorf("Directory does not exist: %s", dir)
 		return
@@ -54,10 +61,12 @@ func RunFileServer(args []string) {
 
 	fileServer = http.FileServer(http.Dir(dir))
 
-	http.Handle(site, http.StripPrefix("/", fileServer))
+	site = "/" + strings.Trim(site, "/")
+	// fmt.Println("~~~", site)
+	http.Handle(site+"/", http.StripPrefix(site, fileServer))
 
 	fmt.Printf(
-		"==> Starting file server : dir=%q, address=%q, path=%s\n",
+		"==> Starting file server: dir=%q, address=%q, path=%s\n",
 		dir, addr, site,
 	)
 
