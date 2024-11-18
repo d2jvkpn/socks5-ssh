@@ -23,7 +23,7 @@ func RunFileServer(args []string) {
 
 	fSet = flag.NewFlagSet("file_server", flag.ContinueOnError) // flag.ExitOnError
 
-	fSet.StringVar(&addr, "addr", "127.0.0.1:1071", "file server listening address")
+	fSet.StringVar(&addr, "addr", "127.0.0.1:1099", "file server listening address")
 	fSet.StringVar(&dir, "dir", "./site", "local site directory path")
 	fSet.StringVar(&site, "site", "/site", "http site path")
 
