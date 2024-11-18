@@ -17,7 +17,7 @@ RUN if [ "$BUILD_Region" = "cn" ]; then \
 RUN apk --no-cache update && \
   apk --no-cache upgrade
 
-WORKDIR /app
+WORKDIR /apps
 
 ADD ./main.go ./go.mod ./go.sum ./project.yaml ./
 #COPY ./internal ./internal
@@ -71,15 +71,15 @@ RUN apk --no-cache update && \
 # ansible nmap
 
 
-RUN mkdir -p /app/target
-WORKDIR /app
+RUN mkdir -p /apps/target
+WORKDIR /apps
 
-COPY --from=builder /app/target/ /app/target/
-COPY --from=builder /app/bin/socks5_proxy.sh /app/target/
-COPY --from=builder /app/cache.local/build.yaml /app/
+COPY --from=builder /apps/target/ /apps/target/
+COPY --from=builder /apps/bin/socks5_proxy.sh /apps/target/
+COPY --from=builder /apps/cache.local/build.yaml /apps/
 # COPY ./migrations ./migrations
 
-RUN chmod a+x /app/target/socks5_proxy.sh
+RUN chmod a+x /apps/target/socks5_proxy.sh
 
 # socks5 port
 EXPOSE 1080

@@ -13,8 +13,8 @@ services:
     ports: ["127.0.0.1:1090:1090"]
     container_name: socks5-openvpn
     volumes:
-    - ./configs/:/app/configs:ro
-    - ./logs/:/app/logs
+    - ./configs/:/apps/configs:ro
+    - ./logs/:/apps/logs
     environment: ["TZ=Asia/Shanghai"]
-    working_dir: /app
+    working_dir: /apps
     command: ["supervisord", "-l", "logs/supervisord.log", "-c", "configs/supervisord.conf"]

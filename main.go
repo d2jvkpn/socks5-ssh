@@ -91,6 +91,11 @@ func main() {
 	)
 
 	command.AddCmd(
+		"file_server", "http file server for pac files",
+		bin.RunFileServer,
+	)
+
+	command.AddCmd(
 		"test", "test socks5 proxy",
 		bin.TestProxy,
 	)

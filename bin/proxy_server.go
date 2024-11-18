@@ -30,7 +30,7 @@ func RunProxyServer(args []string) {
 		errCh        chan error
 	)
 
-	fSet = flag.NewFlagSet("server", flag.ContinueOnError) // flag.ExitOnError
+	fSet = flag.NewFlagSet("proxy_server", flag.ContinueOnError) // flag.ExitOnError
 
 	fSet.StringVar(&addr, "addr", ":1091", "socks5 listening address")
 	fSet.StringVar(&network, "network", "tcp", "network")
