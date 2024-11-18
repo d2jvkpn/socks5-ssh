@@ -10,7 +10,7 @@ services:
     cap_add: [NET_ADMIN]
     devices: [/dev/net/tun:/dev/net/tun]
     networks: ["net"]
-    ports: ["127.0.0.1:1090:1090"]
+    ports: ["127.0.0.1:1070:1070", "127.0.0.1:1090:1090"]
     container_name: socks5-openvpn
     volumes:
     - ./configs/:/apps/configs:ro
