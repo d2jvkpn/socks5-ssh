@@ -62,9 +62,9 @@ func main() {
 	)
 
 	command.AddCmd(
-		"script", "show script(proxy_pac, docker-compose)",
+		"script", "show script(proxy_pac, compose_ssh, compose_vpn)",
 		func(args []string) {
-			errMsg := "Subcommand is required: proxy_pac | docker-compose\n"
+			errMsg := "Subcommand is required: proxy_pac | compose_ssh | compose_vpn\n"
 
 			if len(args) == 0 {
 				fmt.Fprintf(os.Stderr, errMsg)
