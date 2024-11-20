@@ -100,7 +100,7 @@ GO_ldflags="\
 #???  -X main.git_repository=$git_repository -X main.image=$image"
 #???  -X main.build_host=$build_host
 
-docker build --no-cache --file ${_path}/Dockerfile \
+docker build --no-cache --file ${_path}/Containerfile \
   --build-arg=BUILD_Time="$build_time" \
   --build-arg=BUILD_Region="$BUILD_Region" \
   --build-arg=APP_Name="$app_name" \

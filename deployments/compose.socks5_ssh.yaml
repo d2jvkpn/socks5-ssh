@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  socks5-proxy:
+  socks5_ssh:
     image: ${IMAGE_Name}:${IMAGE_Tag}
     restart: always
     labels: { autoheal: true } # work with willfarrell/autoheal
@@ -14,7 +14,7 @@ services:
       retries: 3
     network_mode: host
     user: "${USER_UID}:${USER_GID}"
-    container_name: ${APP_Name}
+    container_name: socks5_ssh
     volumes:
     - ./configs/:/apps/configs:ro
     environment: ["TZ=Asia/Shanghai"]

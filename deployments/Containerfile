@@ -77,6 +77,10 @@ WORKDIR /apps
 COPY --from=builder /apps/target/ /apps/target/
 COPY --from=builder /apps/bin/socks5_proxy.sh /apps/target/
 COPY --from=builder /apps/cache.local/build.yaml /apps/
+
+RUN cp /etc/supervisord.conf /etc/supervisord.conf.bk
+COPY --from=builder /apps/deployments/supervisord.conf /etc/
+
 # COPY ./migrations ./migrations
 
 RUN chmod a+x /apps/target/socks5_proxy.sh
@@ -86,3 +90,4 @@ EXPOSE 1080
 
 CMD [./target/main, ssh, -config=configs/prod.yaml, -addr=:1080]
 # CMD [config=configs/ssh.conf, ./target/socks5_proxy.sh, remote_host, :1080]
+# CMD [supervisord, -l, logs/supervisord.log, -c, /etc/supervisord.conf]

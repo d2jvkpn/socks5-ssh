@@ -1,10 +1,10 @@
 version: '3'
 
 networks:
-  net: { name: "socks5-openvpn", driver: bridge, external: false }
+  net: { name: "socks5_vpn", driver: bridge, external: false }
 
 services:
-  socks5-openvpn:
+  socks5_vpn:
     image: socks5-proxy:dev
     restart: always
     cap_add: [NET_ADMIN]
@@ -12,16 +12,11 @@ services:
     networks: ["net"]
     # socks5 proxy and file server
     ports: ["127.0.0.1:1090:1090", "127.0.0.1:1099:1099"]
-    container_name: socks5-openvpn
+    container_name: socks5_vpn
     volumes:
     - ./configs/:/apps/configs:ro
     - ./site/:/apps/site
     - ./logs/:/apps/logs
     environment: ["TZ=Asia/Shanghai"]
     working_dir: /apps
-    command:
-    - "supervisord"
-    - "-l"
-    - "logs/supervisord.log"
-    - "-c"
-    - "configs/supervisord.conf"
+    command: [supervisord, -l, logs/supervisord.log, -c, /etc/supervisord.conf]
