@@ -43,7 +43,8 @@ func main() {
 	command.AddCmd(
 		"config", "show config(socks5_ssh, ssh_config, supervisor)",
 		func(args []string) {
-			errMsg := "Subcommand is required: socks5_ssh | ssh_config | supervisor\n"
+			errMsg := "Subcommand is required: " +
+				"socks5_ssh | ssh_config | supervisor\n"
 
 			if len(args) == 0 {
 				fmt.Fprintf(os.Stderr, errMsg)
