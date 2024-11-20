@@ -5,7 +5,7 @@ repository: git@github.com:d2jvkpn/socks5-proxy.git
 image_name: socks5-proxy
 
 socks5_ssh: |
-  ##### location: configs/local.yaml
+  # path: configs/local.yaml
 
   ssh:
     ssh_host: remote_host
@@ -25,17 +25,42 @@ socks5_ssh: |
     ssh_private_key: /home/account/.ssh/id_rsa
     ssh_known_hosts: /home/account/.ssh/known_hosts
 
+supervisor: |
+    # path: /apps/configs/supervisor.ini
+
+    [program:openvpn]
+    user=root
+    command=openvpn --config configs/openvpn.ovpn --auth-user-pass configs/openvpn.auth
+    autostart=true
+    autorestart=true
+    stdout_logfile=logs/openvpn.log
+    stderr_logfile=logs/openvpn.error
+
+    [program:socks5_server]
+    command=target/main server --addr=:1090
+    autostart=true
+    autorestart=true
+    stdout_logfile=logs/socks5_server.log
+    stderr_logfile=logs/socks5_server.error
+
+    [program:file_server]
+    command=target/main file_server --addr=:1099
+    autostart=true
+    autorestart=true
+    stdout_logfile=logs/file_server.log
+    stderr_logfile=logs/file_server.error
+
 ssh_config: |
-    ##### location: configs/ssh.conf
+    # path: configs/ssh.conf
 
     Host remote_host
-        # ProxyJump another_host
+        # ProxyJump host01,host02
         # ProxyCommand  nc -X 5 -x 127.0.0.1:1090 %h
         HostName 127.0.0.1
         User account
         Port 22
-        IdentityFile configs/ssh.key # ~/.ssh/id_rsa
-        UserKnownHostsFile configs/known_hosts # ~/.ssh/known_hosts
+        IdentityFile configs/account.ssh-ed25519 # ~/.ssh/id_rsa
+        UserKnownHostsFile configs/ssh-known_hosts # ~/.ssh/known_hosts
         LogLevel    INFO
         Compression yes
         ServerAliveInterval 5
