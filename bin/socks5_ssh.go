@@ -16,7 +16,7 @@ import (
 	"github.com/d2jvkpn/gotk"
 )
 
-func RunProxyXSSH(args []string) {
+func RunSocks5SSH(args []string) {
 	var (
 		fSet    *flag.FlagSet
 		config  string

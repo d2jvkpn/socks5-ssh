@@ -17,7 +17,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func RunProxyServer(args []string) {
+func RunSocks5Server(args []string) {
 	var (
 		err     error
 		addr    string
