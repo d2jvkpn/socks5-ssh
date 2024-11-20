@@ -35,7 +35,7 @@ func RunSocks5Server(args []string) {
 		errCh        chan error
 	)
 
-	fSet = flag.NewFlagSet("proxy_server", flag.ContinueOnError) // flag.ExitOnError
+	fSet = flag.NewFlagSet("socks5_server", flag.ContinueOnError) // flag.ExitOnError
 
 	fSet.StringVar(&addr, "addr", ":1091", "socks5 listening address")
 	fSet.StringVar(&config, "config", "", "account authenticator")
@@ -44,7 +44,7 @@ func RunSocks5Server(args []string) {
 
 	fSet.Usage = func() {
 		output := flag.CommandLine.Output()
-		fmt.Fprintf(output, "Usage of proxy server:\n")
+		fmt.Fprintf(output, "Usage of socks5 server:\n")
 		fSet.PrintDefaults()
 	}
 
@@ -101,7 +101,7 @@ func RunSocks5Server(args []string) {
 		var err error
 
 		logger.Info(
-			"Starting SOCKS5 proxying server",
+			"Starting SOCKS5 server",
 			"command", "server",
 			"address", addr,
 			"config", config,

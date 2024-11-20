@@ -3,7 +3,7 @@ package bin
 import (
 	"flag"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -18,6 +18,7 @@ func RunFileServer(args []string) {
 		fSet *flag.FlagSet
 
 		site       string
+		logger     *slog.Logger
 		fileServer http.Handler
 	)
 
@@ -40,12 +41,14 @@ func RunFileServer(args []string) {
 		return
 	}
 
+	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
+
 	defer func() {
 		if err != nil {
-			log.Printf("Exit: %v\n", err)
+			logger.Error("Exit", "error", err)
 			os.Exit(1)
 		} else {
-			log.Printf("Exit\n")
+			logger.Info("Exit")
 		}
 	}()
 
@@ -65,9 +68,11 @@ func RunFileServer(args []string) {
 	// fmt.Println("~~~", site)
 	http.Handle(site+"/", http.StripPrefix(site, fileServer))
 
-	fmt.Printf(
-		"==> Starting file server: dir=%q, address=%q, path=%s\n",
-		dir, addr, site,
+	logger.Info(
+		"==> Starting file server",
+		"directory", dir,
+		"address", addr,
+		"site", site,
 	)
 
 	if err = http.ListenAndServe(addr, nil); err != nil {

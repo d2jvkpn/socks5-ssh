@@ -38,7 +38,7 @@ func RunSocks5SSH(args []string) {
 	// 1.
 	shutdown = func() error { return nil }
 
-	fSet = flag.NewFlagSet("proxy", flag.ContinueOnError) // flag.ExitOnError
+	fSet = flag.NewFlagSet("socks5_ssh", flag.ContinueOnError) // flag.ExitOnError
 
 	fSet.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
 	fSet.StringVar(&subkey, "subkey", "ssh", "use subkey of config(yaml)")
@@ -47,7 +47,7 @@ func RunSocks5SSH(args []string) {
 
 	fSet.Usage = func() {
 		output := flag.CommandLine.Output()
-		fmt.Fprintf(output, "Usage of proxy through ssh:\n")
+		fmt.Fprintf(output, "Usage of sock5 ssh:\n")
 		fSet.PrintDefaults()
 	}
 
@@ -100,7 +100,7 @@ func RunSocks5SSH(args []string) {
 		var err error
 
 		logger.Info(
-			"Starting SOCKS5 proxying through ssh",
+			"Starting SOCKS5 ssh",
 			"command", "ssh",
 			"config", config,
 			"address", addr,
