@@ -41,9 +41,9 @@ func main() {
 	command.Project = project
 
 	command.AddCmd(
-		"config", "show config(ssh_proxy, socks5_proxy)",
+		"config", "show config(socks5_ssh, ssh_config)",
 		func(args []string) {
-			errMsg := "Subcommand is required: ssh_proxy | socks5_proxy\n"
+			errMsg := "Subcommand is required: socks5_ssh | ssh_config\n"
 
 			if len(args) == 0 {
 				fmt.Fprintf(os.Stderr, errMsg)
@@ -52,7 +52,7 @@ func main() {
 			}
 
 			switch args[0] {
-			case "ssh_proxy", "socks5_proxy":
+			case "socks5_ssh", "ssh_config":
 				fmt.Printf("%s\n", command.Project.GetString(args[0]))
 			default:
 				fmt.Fprintf(os.Stderr, errMsg)
@@ -62,9 +62,9 @@ func main() {
 	)
 
 	command.AddCmd(
-		"script", "show script(proxy_pac, compose_ssh, compose_vpn)",
+		"script", "show script(pac, ssh, vpn)",
 		func(args []string) {
-			errMsg := "Subcommand is required: proxy_pac | compose_ssh | compose_vpn\n"
+			errMsg := "Subcommand is required: pac | ssh | vpn\n"
 
 			if len(args) == 0 {
 				fmt.Fprintf(os.Stderr, errMsg)
@@ -73,11 +73,11 @@ func main() {
 			}
 
 			switch args[0] {
-			case "proxy_pac":
+			case "pac":
 				fmt.Printf("%s\n", _ProxyPac)
-			case "compose_ssh":
+			case "ssh":
 				fmt.Printf("%s\n", _ComposeSSH)
-			case "compose_vpn":
+			case "vpn":
 				fmt.Printf("%s\n", _ComposeVPN)
 			default:
 				fmt.Fprintf(os.Stderr, errMsg)

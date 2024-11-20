@@ -4,7 +4,7 @@ authors: ["d2jvkpn <d2jvkpn@noreply.local>"]
 repository: git@github.com:d2jvkpn/socks5-proxy.git
 image_name: socks5-proxy
 
-ssh_proxy: |
+socks5_ssh: |
   ##### location: configs/local.yaml
 
   ssh:
@@ -25,7 +25,7 @@ ssh_proxy: |
     ssh_private_key: /home/account/.ssh/id_rsa
     ssh_known_hosts: /home/account/.ssh/known_hosts
 
-socks5_proxy: |
+ssh_config: |
     ##### location: configs/ssh.conf
 
     Host remote_host
