@@ -102,3 +102,4 @@ firefox -p proxy
 
 #### C05. TODO
 1. block target ips and domains
+2. socks5 through ssh, vpn, wireguard, stunnel

@@ -26,7 +26,7 @@ func RunSocks5SSH(args []string) {
 		err     error
 		logger  *slog.Logger
 
-		client       *proxy.ProxyXSSH
+		client       *proxy.Socks5SSH
 		socks5Config *socks5.Config
 		listener     net.Listener
 		socks5Server *socks5.Server

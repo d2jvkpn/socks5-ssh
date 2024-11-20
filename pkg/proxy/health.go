@@ -9,7 +9,7 @@ import (
 )
 
 // ticker = time.NewTicker(5 * time.Second)
-func ProxyHealthCmd(proxy *ProxyXSSH, ticker *time.Ticker, maxRestries int) (
+func ProxyHealthCmd(proxy *Socks5SSH, ticker *time.Ticker, maxRestries int) (
 	err error) {
 	var (
 		ok     bool

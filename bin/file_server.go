@@ -69,7 +69,7 @@ func RunFileServer(args []string) {
 	http.Handle(site+"/", http.StripPrefix(site, fileServer))
 
 	logger.Info(
-		"==> Starting file server",
+		"Starting file server",
 		"directory", dir,
 		"address", addr,
 		"site", site,

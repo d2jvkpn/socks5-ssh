@@ -18,7 +18,7 @@ import (
 	"golang.org/x/crypto/ssh/knownhosts"
 )
 
-type ProxyXSSH struct {
+type Socks5SSH struct {
 	SSH_Host       string `mapstructure:"ssh_host"`
 	SSH_Port       int    `mapstructure:"ssh_port"`
 	SSH_User       string `mapstructure:"ssh_user"`
@@ -35,7 +35,7 @@ type ProxyXSSH struct {
 }
 
 func LoadProxy(fp string, key string, logger *zap.Logger) (
-	config *ProxyXSSH, err error) {
+	config *Socks5SSH, err error) {
 	var vp *viper.Viper
 
 	vp = viper.New()
@@ -48,7 +48,7 @@ func LoadProxy(fp string, key string, logger *zap.Logger) (
 		return nil, fmt.Errorf("read config: %w", err)
 	}
 
-	config = new(ProxyXSSH)
+	config = new(Socks5SSH)
 	config.Viper = vp
 
 	// err = vp.Unmarshal(config)
@@ -82,7 +82,7 @@ func LoadProxy(fp string, key string, logger *zap.Logger) (
 	return config, nil
 }
 
-func (self *ProxyXSSH) dial() (err error) {
+func (self *Socks5SSH) dial() (err error) {
 	var (
 		config *ssh.ClientConfig
 		signer ssh.Signer
@@ -137,7 +137,7 @@ func (self *ProxyXSSH) dial() (err error) {
 }
 
 // ssh auth methods
-func (self *ProxyXSSH) AuthMethods() string {
+func (self *Socks5SSH) AuthMethods() string {
 	var methods []string
 
 	methods = make([]string, 0)
@@ -153,7 +153,7 @@ func (self *ProxyXSSH) AuthMethods() string {
 	return strings.Join(methods, ",")
 }
 
-func (self *ProxyXSSH) Resolve(ctx context.Context, name string) (
+func (self *Socks5SSH) Resolve(ctx context.Context, name string) (
 	c context.Context, ip net.IP, err error) {
 
 	var (
@@ -198,7 +198,7 @@ func (self *ProxyXSSH) Resolve(ctx context.Context, name string) (
 	return ctx, ip, err
 }
 
-func (self *ProxyXSSH) Socks5Config() (config *socks5.Config) {
+func (self *Socks5SSH) Socks5Config() (config *socks5.Config) {
 	var logger *zap.Logger
 
 	logger = self.Logger.Named("proxy")
@@ -243,7 +243,7 @@ func (self *ProxyXSSH) Socks5Config() (config *socks5.Config) {
 	return config
 }
 
-func (self *ProxyXSSH) Close() (err error) {
+func (self *Socks5SSH) Close() (err error) {
 	if self == nil {
 		return
 	}
