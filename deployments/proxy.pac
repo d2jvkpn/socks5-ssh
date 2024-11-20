@@ -28,7 +28,7 @@ function FindProxyForURL(url, host) {
   }
 
   // white list
-  let websites = ["example1.com", "example2.com"];
+  let websites = ["target1.com", "1.0.1.42"];
 
   for (let i = 0; i < websites.length; i++) {
     if (dnsDomainIs(host, websites[i])) {
