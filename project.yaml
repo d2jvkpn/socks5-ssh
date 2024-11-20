@@ -30,13 +30,12 @@ socks5_proxy: |
 
     Host remote_host
         # ProxyJump another_host
+        # ProxyCommand  nc -X 5 -x 127.0.0.1:1090 %h
         HostName 127.0.0.1
         User account
         Port 22
-        # IdentityFile ~/.ssh/id_rsa
-        IdentityFile configs/ssh.key
-        # UserKnownHostsFile ~/.ssh/known_hosts
-        UserKnownHostsFile configs/known_hosts
+        IdentityFile configs/ssh.key # ~/.ssh/id_rsa
+        UserKnownHostsFile configs/known_hosts # ~/.ssh/known_hosts
         LogLevel    INFO
         Compression yes
         ServerAliveInterval 5

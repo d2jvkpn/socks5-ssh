@@ -98,3 +98,7 @@ firefox -p proxy
 
 3. openvpn server in container
 - https://github.com/d2jvkpn/playground/tree/master/container/openvpn
+
+
+#### C05. TODO
+1. block target ips and domains
