@@ -30,10 +30,11 @@ config=${config:-""}
 if [[ ! -z "$config" ]]; then
     ssh -NC -F "$config" -D "$address" "$remote_host"
 else
-    ssh -o "ServerAliveInterval 5" \
+    ssh -NC -D \
+      -o "ServerAliveInterval 5" \
       -o "ServerAliveCountMax 3" \
       -o "ExitOnForwardFailure yes" \
-      -NC -D "$address" "$remote_host"
+      "$address" "$remote_host"
 fi
 
 exit 0

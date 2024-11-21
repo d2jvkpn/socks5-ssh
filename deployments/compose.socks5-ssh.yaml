@@ -21,9 +21,6 @@ services:
     working_dir: /apps
     command: [./target/main, ssh, -config=configs/prod.yaml, -addr=127.0.0.1:${SOCKS5_Port}]
 
-    # When using socks5_proxy.sh, remove the user section and set config in the environment section
-    # command: [./target/socks5_proxy.sh, remote_host, 127.0.0.1:${SOCKS5_Port}]
-
   autoheal:
     image: willfarrell/autoheal
     restart: always
