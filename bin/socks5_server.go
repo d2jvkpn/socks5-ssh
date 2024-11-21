@@ -37,7 +37,7 @@ func RunSocks5Server(args []string) {
 
 	fSet = flag.NewFlagSet("socks5_server", flag.ContinueOnError) // flag.ExitOnError
 
-	fSet.StringVar(&addr, "addr", ":1091", "socks5 listening address")
+	fSet.StringVar(&addr, "addr", "127.0.0.1:1091", "socks5 listening address")
 	fSet.StringVar(&config, "config", "", "account authenticator")
 	fSet.StringVar(&subkey, "subkey", "accounts", "sub key of accounts in config")
 	fSet.StringVar(&network, "network", "tcp", "network")

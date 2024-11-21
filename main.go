@@ -98,7 +98,7 @@ func main() {
 	)
 
 	command.AddCmd(
-		"file_server", "http file server for pac files",
+		"file_server", "run a http file server(provide pac files for browsers)",
 		bin.RunFileServer,
 	)
 

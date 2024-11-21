@@ -42,7 +42,7 @@ func RunSocks5SSH(args []string) {
 
 	fSet.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
 	fSet.StringVar(&subkey, "subkey", "ssh", "use subkey of config(yaml)")
-	fSet.StringVar(&addr, "addr", ":1081", "socks5 listening address")
+	fSet.StringVar(&addr, "addr", "127.0.0.1:1081", "socks5 listening address")
 	fSet.StringVar(&network, "network", "tcp", "network")
 
 	fSet.Usage = func() {
