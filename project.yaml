@@ -25,12 +25,13 @@ socks5_ssh: |
     ssh_private_key: /home/account/.ssh/id_rsa
     ssh_known_hosts: /home/account/.ssh/known_hosts
 
-supervisor: |
+supervisor_vpn: |
     # path: /apps/configs/supervisor.ini
 
     [program:openvpn]
     user=root
-    command=openvpn --config configs/openvpn.ovpn --auth-user-pass configs/openvpn.auth
+    # command=openvpn --config configs/openvpn.ovpn --auth-nocache --auth-user-pass configs/openvpn.ovpn.auth
+    command=openvpn --config configs/openvpn.ovpn --auth-nocache --askpass configs/openvpn.ovpn.pass
     autostart=true
     autorestart=true
     stdout_logfile=logs/openvpn.log
@@ -45,6 +46,23 @@ supervisor: |
 
     [program:file_server]
     command=target/main file_server --addr=:1099
+    autostart=true
+    autorestart=true
+    stdout_logfile=logs/file_server.log
+    stderr_logfile=logs/file_server.error
+
+supervisor_ssh: |
+    # path: /apps/configs/supervisor.ini
+
+    [program:socks5_ssh]
+    command=target/main, ssh, -config=configs/prod.yaml, -addr=127.0.0.1:1080
+    autostart=true
+    autorestart=true
+    stdout_logfile=logs/socks5_ssh.log
+    stderr_logfile=logs/socks5_ssh.error
+
+    [program:file_server]
+    command=target/main file_server --addr=:1089
     autostart=true
     autorestart=true
     stdout_logfile=logs/file_server.log
