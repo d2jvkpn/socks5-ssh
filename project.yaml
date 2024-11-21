@@ -30,7 +30,7 @@ supervisor_vpn: |
 
     [program:openvpn]
     user=root
-    # command=openvpn --config configs/openvpn.ovpn --auth-nocache --auth-user-pass configs/openvpn.ovpn.auth
+    # --auth-user-pass configs/openvpn.ovpn.auth (account\npassword)
     command=openvpn --config configs/openvpn.ovpn --auth-nocache --askpass configs/openvpn.ovpn.pass
     autostart=true
     autorestart=true
