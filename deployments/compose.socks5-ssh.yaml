@@ -14,7 +14,7 @@ services:
       retries: 3
     network_mode: host
     user: "${USER_UID}:${USER_GID}"
-    container_name: socks5_ssh
+    container_name: socks5-ssh
     volumes:
     - ./configs/:/apps/configs:ro
     environment: ["TZ=Asia/Shanghai"]

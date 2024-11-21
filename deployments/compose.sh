@@ -6,12 +6,13 @@ command -v yq > /dev/null
 
 export IMAGE_Tag=$1 SOCKS5_Port=$2
 
-export APP_Name=$(yq .app_name project.yaml)
-export IMAGE_Name=$(yq .image_name project.yaml)
-export USER_UID=$(id -u) USER_GID=$(id -g)
+export APP_Name=$(yq .app_name project.yaml) \
+  IMAGE_Name=$(yq .image_name project.yaml) \
+  USER_UID=$(id -u) \
+  USER_GID=$(id -g)
 
 mkdir -p configs logs data/postgres data/redis # data/$APP_Name
-envsubst < ${_path}/compose.template.yaml > ${_path}/compose.yaml
+envsubst < ${_path}/compose.socks5-ssh.yaml > compose.yaml
 
 ####
 exit 0

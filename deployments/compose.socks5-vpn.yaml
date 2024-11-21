@@ -12,7 +12,7 @@ services:
     networks: ["net"]
     # socks5 proxy and file server
     ports: ["127.0.0.1:1090:1090", "127.0.0.1:1099:1099"]
-    container_name: socks5_vpn
+    container_name: socks5-vpn
     volumes:
     - ./configs/:/apps/configs:ro
     - ./site/:/apps/site
