@@ -66,9 +66,8 @@ RUN apk --no-cache update && \
   apk --no-cache upgrade && \
   apk --no-cache add tzdata curl bash openssh \
   openvpn supervisor \
-  bind-tools traceroute
+  bind-tools traceroute openssl stunnel
 # gcompat nmap expect ansible sshpass
-# openssl stunnel
 
 RUN mkdir -p /apps/target
 WORKDIR /apps
@@ -86,6 +85,9 @@ RUN chmod a+x /apps/target/socks5_proxy.sh
 
 # socks5_ssh port
 EXPOSE 1080
+# file_server port
+EXPOSE 1089
+
 # socks5_server port
 EXPOSE 1090
 # file_server port
