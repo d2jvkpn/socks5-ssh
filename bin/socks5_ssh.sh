@@ -3,7 +3,7 @@ set -eu -o pipefail # -x
 _wd=$(pwd); _path=$(dirname $0 | xargs -i readlink -f {})
 
 function show_help() {
-    >&2 echo -e "Usage $(basename $0):\n     socks5_proxy.sh <remote_host> [127.0.0.1:1081]"
+    >&2 echo -e "Usage $(basename $0):\n     socks5_ssh.sh <remote_host> [127.0.0.1:1081]"
 }
 
 if [ $# -eq 0 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
