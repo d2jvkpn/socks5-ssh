@@ -12,12 +12,11 @@ import (
 
 func RunFileServer(args []string) {
 	var (
-		dir  string
-		addr string
-		err  error
-		fSet *flag.FlagSet
+		addr   string
+		mounts StringArgs
+		err    error
+		fSet   *flag.FlagSet
 
-		site       string
 		logger     *slog.Logger
 		fileServer http.Handler
 	)
@@ -25,8 +24,7 @@ func RunFileServer(args []string) {
 	fSet = flag.NewFlagSet("file_server", flag.ContinueOnError) // flag.ExitOnError
 
 	fSet.StringVar(&addr, "addr", "127.0.0.1:1099", "file server listening address")
-	fSet.StringVar(&dir, "dir", "./site", "local site directory path")
-	fSet.StringVar(&site, "site", "/site", "http site path")
+	fSet.Var(&mounts, "mount", "mount local dir to http path, default: ./site:/site")
 
 	fSet.Usage = func() {
 		output := flag.CommandLine.Output()
@@ -52,30 +50,54 @@ func RunFileServer(args []string) {
 		}
 	}()
 
-	if dir, err = filepath.Abs(dir); err != nil {
-		err = fmt.Errorf("Can't get absolute path of %s", dir)
-		return
+	if len(mounts) == 0 {
+		mounts = []string{"./site:/site"}
 	}
 
-	if _, err = os.Stat(dir); os.IsNotExist(err) {
-		err = fmt.Errorf("Directory does not exist: %s", dir)
-		return
+	for _, v := range mounts {
+		dir, site, found := strings.Cut(v, ":")
+		if dir == "" || !found {
+			err = fmt.Errorf("Invalid mount %s", v)
+			return
+		}
+
+		if dir, err = filepath.Abs(dir); err != nil {
+			err = fmt.Errorf("Can't get absolute path of %s", dir)
+			return
+		}
+
+		if _, err = os.Stat(dir); os.IsNotExist(err) {
+			err = fmt.Errorf("Directory does not exist: %s", dir)
+			return
+		}
+
+		fileServer = http.FileServer(http.Dir(dir))
+		site = "/" + strings.Trim(site, "/")
+		// fmt.Println("~~~", site)
+		http.Handle(site+"/", http.StripPrefix(site, fileServer))
 	}
-
-	fileServer = http.FileServer(http.Dir(dir))
-
-	site = "/" + strings.Trim(site, "/")
-	// fmt.Println("~~~", site)
-	http.Handle(site+"/", http.StripPrefix(site, fileServer))
 
 	logger.Info(
 		"Starting file server",
-		"directory", dir,
+		"mounts", mounts,
 		"address", addr,
-		"site", site,
 	)
 
 	if err = http.ListenAndServe(addr, nil); err != nil {
 		err = fmt.Errorf("Failed to start server: %w", err)
 	}
+}
+
+// Define a type that will implement the flag.Value interface
+type StringArgs []string
+
+// Implement the String method
+func (i *StringArgs) String() string {
+	return strings.Join(*i, ",")
+}
+
+// Implement the Set method
+func (i *StringArgs) Set(value string) error {
+	*i = append(*i, value)
+	return nil
 }
