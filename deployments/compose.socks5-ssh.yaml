@@ -17,7 +17,8 @@ services:
     container_name: socks5-ssh
     volumes:
     - ./configs/:/apps/configs:ro
-    environment: ["TZ=Asia/Shanghai"]
+    environment:
+      TZ: Asia/Shanghai
     working_dir: /apps
     command: [./target/main, ssh, -config=configs/prod.yaml, -addr=127.0.0.1:${SOCKS5_Port}]
 
@@ -32,11 +33,11 @@ services:
     - /etc/localtime:/etc/localtime:ro
     - /var/run/docker.sock:/var/run/docker.sock
     environment:
-    # - AUTOHEAL_CONTAINER_LABEL=all
-    - AUTOHEAL_CONTAINER_LABEL=autoheal
-    - AUTOHEAL_INTERVAL=5
-    - AUTOHEAL_START_PERIOD=0
-    - AUTOHEAL_DEFAULT_STOP_TIMEOUT=5
-    - AUTOHEAL_ONLY_MONITOR_RUNNING=false
-    - CURL_TIMEOUT=5
-    - WEBHOOK_URL=""
+      # AUTOHEAL_CONTAINER_LABEL: all
+      AUTOHEAL_CONTAINER_LABEL: autoheal
+      AUTOHEAL_INTERVAL: 5
+      AUTOHEAL_START_PERIOD: 0
+      AUTOHEAL_DEFAULT_STOP_TIMEOUT: 5
+      AUTOHEAL_ONLY_MONITOR_RUNNING: false
+      CURL_TIMEOUT: 5
+      WEBHOOK_URL: ""

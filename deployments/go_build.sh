@@ -53,6 +53,7 @@ else
     GOOS=linux GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.linux-amd64 main.go
     GOOS=linux GOARCH=arm64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.linux-arm64 main.go
     GOOS=windows GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.windows-amd64.exe main.go
+    GOOS=windows GOARCH=arm64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.windows-arm64.exe main.go
     GOOS=darwin GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.darwin-amd64 main.go
     GOOS=darwin GOARCH=arm64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.darwin-arm64 main.go
 
