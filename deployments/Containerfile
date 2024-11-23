@@ -90,6 +90,8 @@ EXPOSE 1089
 
 # socks5_server port
 EXPOSE 1090
+# supervisor webui
+EXPOSE 1098
 # file_server port
 EXPOSE 1099
 

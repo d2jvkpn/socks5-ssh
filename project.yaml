@@ -28,12 +28,6 @@ socks5_ssh: |
 supervisor_vpn: |
     # path: /apps/configs/supervisor.ini
 
-    # to enable inet_http_server, copy and edit the following lines to /apps/configs/supervisor.ini
-    ;[inet_http_server]    # inet (TCP) server disabled by default
-    ;port=:9002            # (ip_address:port specifier, *:port for all iface)
-    ;username=user         # (default is no username)
-    ;password=123          # (default is no password)
-
     [program:openvpn]
     user=root
     # --auth-user-pass configs/openvpn.ovpn.auth (account\npassword)
@@ -49,6 +43,12 @@ supervisor_vpn: |
     autorestart=true
     stdout_logfile=logs/socks5_server.log
     stderr_logfile=logs/socks5_server.error
+
+    # to enable inet_http_server, copy and edit the following lines to /apps/configs/supervisor.ini
+    ;[inet_http_server]    # inet (TCP) server disabled by default
+    ;port=:1098            # (ip_address:port specifier, *:port for all iface)
+    ;username=user         # (default is no username)
+    ;password=123          # (default is no password)
 
     [program:file_server]
     command=target/main file_server --addr=:1099 --mount=./site:/site --mount=./logs:/logs
