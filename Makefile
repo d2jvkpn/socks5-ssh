@@ -22,12 +22,6 @@ build:
 	go build -o target/main main.go
 	ls -al target/
 
-save:
-	mkdir -p target
-	docker save socks5-proxy:dev -o target/socks5-proxy_dev.tar
-	pigz -f target/socks5-proxy_dev.tar
-	ls -alh target/socks5-proxy_dev.tar.gz
-
 release:
 	release=true deployments/go_build.sh
 	ls -al target
