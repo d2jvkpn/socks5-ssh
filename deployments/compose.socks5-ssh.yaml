@@ -17,8 +17,7 @@ services:
     container_name: socks5-ssh
     volumes:
     - ./configs/:/apps/configs:ro
-    environment:
-      TZ: Asia/Shanghai
+    environment: { TZ: Asia/Shanghai }
     working_dir: /apps
     command: [./target/main, ssh, -config=configs/prod.yaml, -addr=127.0.0.1:${SOCKS5_Port}]
 

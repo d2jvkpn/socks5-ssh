@@ -17,7 +17,6 @@ services:
     - ./configs/:/apps/configs:ro
     - ./site/:/apps/site
     - ./logs/:/apps/logs
-    environment:
-      TZ: Asia/Shanghai
+    environment: { TZ: Asia/Shanghai }
     working_dir: /apps
     command: [supervisord, -l, /apps/logs/supervisord.log, -c, /etc/supervisord.conf]
