@@ -20,4 +20,4 @@ services:
     environment:
       TZ: Asia/Shanghai
     working_dir: /apps
-    command: [supervisord, -l, logs/supervisord.log, -c, /etc/supervisord.conf]
+    command: [supervisord, -l, /apps/logs/supervisord.log, -c, /etc/supervisord.conf]

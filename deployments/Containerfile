@@ -64,9 +64,8 @@ RUN if [ "$BUILD_Region" = "cn" ]; then \
 
 RUN apk --no-cache update && \
   apk --no-cache upgrade && \
-  apk --no-cache add tzdata curl bash openssh \
-  openvpn supervisor \
-  bind-tools traceroute openssl stunnel
+  apk --no-cache add tzdata coreutils curl bash openssh supervisor \
+  bind-tools traceroute openssl stunnel openvpn
 # gcompat nmap expect ansible sshpass
 
 RUN mkdir -p /apps/target
@@ -97,4 +96,4 @@ EXPOSE 1099
 
 CMD [./target/main, ssh, -config=configs/prod.yaml, -addr=:1080]
 # CMD [config=configs/ssh.conf, ./target/socks5_ssh.sh, remote_host, :1080]
-# CMD [supervisord, -l, logs/supervisord.log, -c, /etc/supervisord.conf]
+# CMD [supervisord, -l, /apps/logs/supervisord.log, -c, /etc/supervisord.conf]
