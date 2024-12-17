@@ -15,13 +15,13 @@ var (
 	//go:embed project.yaml
 	_Project []byte
 
-	//go:embed deployments/compose.socks5-ssh.yaml
+	//go:embed containers/compose.socks5-ssh.yaml
 	_ComposeSSH []byte
 
-	//go:embed deployments/compose.socks5-vpn.yaml
+	//go:embed containers/compose.socks5-vpn.yaml
 	_ComposeVPN []byte
 
-	//go:embed deployments/proxy.pac
+	//go:embed containers/proxy.pac
 	_ProxyPac []byte
 )
 

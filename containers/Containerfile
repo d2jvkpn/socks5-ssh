@@ -25,7 +25,7 @@ ADD ./main.go ./go.mod ./go.sum ./project.yaml ./
 COPY ./pkg ./pkg
 COPY ./proto ./proto
 COPY ./bin ./bin
-COPY ./deployments ./deployments
+COPY ./containers ./containers
 
 COPY ./cache.local ./cache.local
 
@@ -76,7 +76,7 @@ COPY --from=builder /apps/bin/socks5_ssh.sh /apps/target/
 COPY --from=builder /apps/cache.local/build.yaml /apps/
 
 RUN cp /etc/supervisord.conf /etc/supervisord.conf.bk
-COPY --from=builder /apps/deployments/supervisord.conf /etc/
+COPY --from=builder /apps/containers/supervisord.conf /etc/
 
 # COPY ./migrations ./migrations
 

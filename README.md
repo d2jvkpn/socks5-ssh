@@ -12,7 +12,7 @@
 2. DNS Resolver (socksh://)
 - uses the SSH remote command(crypto/ssh.Client.NewSession): dig +short <hostname>
 
-3. Deployments
+3. Containers
 - docker, docker-compose
 - make
 
@@ -63,7 +63,7 @@ make release
 make image-dev
 ```
 - create compose.yaml
-see deployments/compose.sh and deployments/compose.template.yaml
+see containers/compose.sh and containers/compose.template.yaml
 
 #### C03. Applications
 1. commandlines with socks5 proxying
@@ -94,7 +94,7 @@ firefox -p proxy
 - _openvpn.sh
 
 2. deployment
-- deployments/supervisord.compose.yaml
+- containers/supervisord.compose.yaml
 
 3. openvpn server in container
 - https://github.com/d2jvkpn/playground/tree/master/container/openvpn
