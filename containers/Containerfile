@@ -26,8 +26,11 @@ COPY ./pkg ./pkg
 COPY ./proto ./proto
 COPY ./bin ./bin
 COPY ./containers ./containers
+ADD ./bin/socks5_ssh.sh /apps/target/
 
 COPY ./cache.local ./cache.local
+
+RUN chmod a+x /apps/target/*.sh
 
 RUN if [ -d ./cache.local/vendor ]; then \
     echo "==> Found cache.local/vendor"; \
@@ -71,16 +74,11 @@ RUN apk --no-cache update && \
 RUN mkdir -p /apps/target
 WORKDIR /apps
 
-COPY --from=builder /apps/target/ /apps/target/
-COPY --from=builder /apps/bin/socks5_ssh.sh /apps/target/
-COPY --from=builder /apps/cache.local/build.yaml /apps/
-
 RUN cp /etc/supervisord.conf /etc/supervisord.conf.bk
-COPY --from=builder /apps/containers/supervisord.conf /etc/
 
-# COPY ./migrations ./migrations
-
-RUN chmod a+x /apps/target/socks5_ssh.sh
+COPY --from=builder /apps/target/ /apps/target/
+ADD ./cache.local/build.yaml /apps/
+ADD ./containers/supervisord.conf /etc/
 
 # socks5_ssh port
 EXPOSE 1080
