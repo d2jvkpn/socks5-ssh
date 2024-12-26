@@ -67,7 +67,7 @@ RUN if [ "$BUILD_Region" = "cn" ]; then \
 
 RUN apk --no-cache update && \
   apk --no-cache upgrade && \
-  apk --no-cache add tzdata coreutils curl bash openssh supervisor \
+  apk --no-cache add tzdata coreutils curl bash openssh supervisor iproute2 \
   bind-tools traceroute openssl stunnel openvpn
 # gcompat nmap expect ansible sshpass
 
