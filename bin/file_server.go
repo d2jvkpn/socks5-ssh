@@ -24,7 +24,7 @@ func RunFileServer(args []string) {
 	fSet = flag.NewFlagSet("file_server", flag.ContinueOnError) // flag.ExitOnError
 
 	fSet.StringVar(&addr, "addr", "127.0.0.1:1099", "file server listening address")
-	fSet.Var(&mounts, "mount", "mount local dir to http path, default: ./site:/site")
+	fSet.Var(&mounts, "mount", "mount local dir to http path, default: ./data/site:/site")
 
 	fSet.Usage = func() {
 		output := flag.CommandLine.Output()
@@ -51,7 +51,7 @@ func RunFileServer(args []string) {
 	}()
 
 	if len(mounts) == 0 {
-		mounts = []string{"./site:/site"}
+		mounts = []string{"./data/site:/site"}
 	}
 
 	for _, v := range mounts {

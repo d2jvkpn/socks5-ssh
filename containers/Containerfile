@@ -77,7 +77,7 @@ WORKDIR /apps
 RUN cp /etc/supervisord.conf /etc/supervisord.conf.bk
 
 COPY --from=builder /apps/target/ /apps/target/
-ADD ./cache.local/build.yaml /apps/
+ADD ./cache.local/build.yaml /apps/target/
 ADD ./containers/supervisord.conf /etc/
 
 # socks5_ssh port
