@@ -3,7 +3,7 @@ set -eu -o pipefail # -x
 _wd=$(pwd); _path=$(dirname $0 | xargs -i readlink -f {})
 
 exit
-docker exec -it socks5_vpn supervisorctl status
+docker exec -it socks5-vpn supervisorctl status
 # supervisorctl reread
 # supervisorctl update
 
