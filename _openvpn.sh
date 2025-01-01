@@ -11,6 +11,8 @@ docker exec socks5_vpn curl https://icanhazip.com
 
 curl -x sock5h://127.0.0.1:1090 https://ifconfig.me
 
-# docker exec -it socks5_vpn bash
+curl -x sock5h://127.0.0.1:1090 https://icanhazip.com
 
-# docker exec -it socks5_vpn ssh -F configs/ssh.conf remote_host
+# docker exec -it socks5-vpn bash
+
+# docker exec -it socks5-vpn ssh -F configs/ssh.conf remote_host
