@@ -61,7 +61,6 @@ LABEL stage=running
 
 ENV TZ=${TZ:-Asia/Shanghai}
 ENV APP_Name=${APP_Name}
-ENV BUILD_Time=${BUILD_Time}
 
 RUN if [ "$region" = "cn" ]; then \
     echo "==> region: $region"; \
