@@ -8,7 +8,7 @@ ARG region
 MAINTAINER github.com/d2jvkpn <d2jvkpn@noreply.local>
 LABEL app=${APP_Name}
 LABEL stage=${APP_Name}_build
-SHELL ["/bin/bash", "-c"]
+#SHELL ["/bin/bash", "-c"]
 
 RUN if [ "$region" = "cn" ]; then \
     echo "==> region: $region"; \
@@ -57,13 +57,11 @@ ARG region
 MAINTAINER github.com/d2jvkpn <d2jvkpn@noreply.local>
 LABEL app=${APP_Name}
 LABEL stage=running
-SHELL ["/bin/bash", "-c"]
+#SHELL ["/bin/bash", "-c"]
 
 ENV TZ=${TZ:-Asia/Shanghai}
 ENV APP_Name=${APP_Name}
 ENV BUILD_Time=${BUILD_Time}
-
-SHELL ["/bin/bash", "-c"]
 
 RUN if [ "$region" = "cn" ]; then \
     echo "==> region: $region"; \
