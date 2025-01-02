@@ -6,8 +6,11 @@ ARG GO_ldflags
 ARG region
 
 MAINTAINER github.com/d2jvkpn <d2jvkpn@noreply.local>
+
 LABEL app=${APP_Name}
+LABEL version=${APP_Version}
 LABEL stage=${APP_Name}_build
+
 #SHELL ["/bin/bash", "-c"]
 
 RUN if [ "$region" = "cn" ]; then \
@@ -55,12 +58,16 @@ ARG APP_Version
 ARG region
 
 MAINTAINER github.com/d2jvkpn <d2jvkpn@noreply.local>
+
 LABEL app=${APP_Name}
+LABEL version=${APP_Version}
 LABEL stage=running
+
 #SHELL ["/bin/bash", "-c"]
 
-ENV TZ=${TZ:-Asia/Shanghai}
 ENV APP_Name=${APP_Name}
+ENV APP_Version=${APP_Version}
+ENV TZ=${TZ:-Asia/Shanghai}
 
 RUN if [ "$region" = "cn" ]; then \
     echo "==> region: $region"; \

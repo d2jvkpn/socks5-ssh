@@ -36,7 +36,7 @@ region=${region:-""}
 
 #### 2. git
 function on_exit() {
-    git checkout dev #??? --force
+    git checkout dev || true #??? --force
 }
 trap on_exit EXIT
 
