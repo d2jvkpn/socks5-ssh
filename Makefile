@@ -47,9 +47,9 @@ test:
 	curl -k -x 'socks5h://hello:world@127.0.0.1:1081' https://icanhazip.com
 
 image-local:
-	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=local DOCKER_Push=false GIT=false \
+	region=cn DOCKER_Pull=false DOCKER_Tag=local DOCKER_Push=false GIT_Pull=false \
 	  bash containers/build.sh dev
 
 image-dev:
-	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=dev DOCKER_Push=false \
+	region=cn DOCKER_Pull=false DOCKER_Tag=dev DOCKER_Push=false \
 	  bash containers/build.sh dev

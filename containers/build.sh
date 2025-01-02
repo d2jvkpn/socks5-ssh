@@ -26,12 +26,11 @@ build_time=$(date +'%FT%T%:z')
 build_host=$(hostname)
 
 # env variables
-# GIT=$(printenv GIT || true)
-GIT=${GIT:-"true"}
+# GIT_Pull=$(printenv GIT_Pull || true)
+GIT_Pull=${GIT_Pull:-"true"}
 DOCKER_Pull=${DOCKER_Pull:-"true"}
 DOCKER_Push=${DOCKER_Push:-"true"}
-BUILD_Region=${BUILD_Region:-""}
-BUILD_Force=${BUILD_Force:-"false"}
+region=${region:-""}
 
 [ -s .env ] && { 2>&1 echo "==> load .env"; . .env; }
 
@@ -54,12 +53,12 @@ unpushed=$(git diff origin/$git_branch..HEAD --name-status)
 [[ ! -z "$unpushed" ]] && git_tree_state="unpushed"
 [[ ! -z "$uncommitted" ]] && git_tree_state="uncommitted"
 
-if [[ "$GIT" != "false" && ! -z "$uncommitted$unpushed" ]]; then
+if [[ "$GIT_Pull" != "false" && ! -z "$uncommitted$unpushed" ]]; then
     >&2 echo '!!! '"git state is dirty"
     exit 1
 fi
 
-[[ "$GIT" != "false" ]] && git pull --no-edit
+[[ "$GIT_Pull" != "false" ]] && git pull --no-edit
 
 #### 3. pull image
 [[ "$DOCKER_Pull" != "false" ]] && \
@@ -102,7 +101,7 @@ GO_ldflags="\
 
 docker build --no-cache --file ${_path}/Containerfile \
   --build-arg=BUILD_Time="$build_time" \
-  --build-arg=BUILD_Region="$BUILD_Region" \
+  --build-arg=region="$region" \
   --build-arg=APP_Name="$app_name" \
   --build-arg=APP_Version="$app_version" \
   --build-arg=GO_ldflags="$GO_ldflags" \
