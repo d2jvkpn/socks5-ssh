@@ -2,6 +2,8 @@
 # include envfile
 # export $(shell sed 's/=.*//' envfile)
 
+SHELL := /bin/bash
+
 working_dir = $(shell pwd)
 build_hostname = $(shell hostname)
 

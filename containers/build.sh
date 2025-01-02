@@ -112,7 +112,7 @@ docker build --no-cache --file ${_path}/Containerfile \
 [ "$DOCKER_Push" != "false" ] && docker push $image
 
 #### 6. remove dangling images
-docker image prune --force --filter label=stage=${app_name}_builder &> /dev/null
+docker image prune --force --filter label=stage=${app_name}_build &> /dev/null
 # docker images --filter "dangling=true" --quiet $image | xargs -i docker rmi {}
 for img in $(docker images -f "dangling=true" -f label=app=${app_name} --quiet); do
     >&2 echo "==> remove image: $img"
