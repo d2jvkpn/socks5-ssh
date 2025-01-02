@@ -63,7 +63,7 @@ make release
 make image-dev
 ```
 - create compose.yaml
-see containers/compose.sh and containers/compose.template.yaml
+see deploy/compose.sh and deploy/compose.template.yaml
 
 #### C03. Applications
 1. commandlines with socks5 proxying
@@ -94,7 +94,7 @@ firefox -p proxy
 - _openvpn.sh
 
 2. deployment
-- containers/supervisord.compose.yaml
+- deploy/supervisord.compose.yaml
 
 3. openvpn server in container
 - https://github.com/d2jvkpn/playground/tree/master/container/openvpn

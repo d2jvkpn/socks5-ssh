@@ -88,7 +88,7 @@ RUN cp /etc/supervisord.conf /etc/supervisord.conf.bk
 
 COPY --from=builder /apps/target/ /apps/target/
 ADD ./cache.local/build.yaml /apps/target/
-ADD ./containers/supervisord.conf /etc/
+ADD ./deploy/supervisord.conf /etc/
 
 # socks5_ssh port
 EXPOSE 1080
@@ -101,6 +101,8 @@ EXPOSE 1090
 EXPOSE 1098
 # file_server port
 EXPOSE 1099
+
+VOLUME ["/apps/configs", "/apps/data", "/apps/logs"]
 
 CMD [./target/main, ssh, -config=configs/prod.yaml, -addr=:1080]
 # CMD [config=configs/ssh.conf, ./target/socks5_ssh.sh, remote_host, :1080]
