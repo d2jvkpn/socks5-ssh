@@ -100,9 +100,9 @@ GO_ldflags="\
 #???  -X main.build_host=$build_host
 
 docker build --no-cache --file ${_path}/Containerfile \
-  --build-arg=region="$region" \
   --build-arg=APP_Name="$app_name" \
   --build-arg=APP_Version="$app_version" \
+  --build-arg=region="$region" \
   --build-arg=GO_ldflags="$GO_ldflags" \
   --tag $image ./
 
@@ -110,7 +110,8 @@ docker build --no-cache --file ${_path}/Containerfile \
 [ "$DOCKER_Push" != "false" ] && docker push $image
 
 #### 6. remove dangling images
-docker image prune --force --filter label=stage=${app_name}_build &> /dev/null
+docker image prune --force --filter label=app=${app_name} --filter label=stage=build &> /dev/null
+
 # docker images --filter "dangling=true" --quiet $image | xargs -i docker rmi {}
 for img in $(docker images -f "dangling=true" -f label=app=${app_name} --quiet); do
     >&2 echo "==> remove image: $img"

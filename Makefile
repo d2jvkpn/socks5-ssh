@@ -25,7 +25,7 @@ build:
 	ls -al target/
 
 release:
-	release=true containers/go_build.sh
+	release=true deploy/go_build.sh
 	ls -al target
 
 ssh:
@@ -48,8 +48,7 @@ test:
 
 image-local:
 	region=cn DOCKER_Pull=false DOCKER_Tag=local DOCKER_Push=false GIT_Pull=false \
-	  bash containers/build.sh dev
+	  bash deploy/build.sh dev
 
 image-dev:
-	region=cn DOCKER_Pull=false DOCKER_Tag=dev DOCKER_Push=false \
-	  bash containers/build.sh dev
+	region=cn DOCKER_Pull=false DOCKER_Tag=dev DOCKER_Push=false bash deploy/build.sh dev

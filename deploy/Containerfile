@@ -9,7 +9,7 @@ MAINTAINER github.com/d2jvkpn <d2jvkpn@noreply.local>
 
 LABEL app=${APP_Name}
 LABEL version=${APP_Version}
-LABEL stage=${APP_Name}_build
+LABEL stage=build
 
 #SHELL ["/bin/bash", "-c"]
 
@@ -31,7 +31,7 @@ ADD ./main.go ./go.mod ./go.sum ./project.yaml ./
 COPY ./pkg ./pkg
 COPY ./proto ./proto
 COPY ./bin ./bin
-COPY ./containers ./containers
+COPY ./deploy ./deploy
 ADD ./bin/socks5_ssh.sh /apps/target/
 
 COPY ./cache.local ./cache.local
