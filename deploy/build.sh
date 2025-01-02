@@ -113,7 +113,7 @@ docker build --no-cache --file ${_path}/Containerfile \
 docker image prune --force --filter label=app=${app_name} --filter label=stage=build &> /dev/null
 
 # docker images --filter "dangling=true" --quiet $image | xargs -i docker rmi {}
-for img in $(docker images -f "dangling=true" -f label=app=${app_name} --quiet); do
+for img in $(docker images -f dangling=true -f label=app=${app_name} --quiet); do
     >&2 echo "==> remove image: $img"
     docker rmi $img || true
 done
