@@ -49,6 +49,7 @@ RUN mkdir -p target
 
 # note: -trimpath will remove -ldflags
 RUN go build -ldflags="-w -s ${GO_ldflags}" -o target/main main.go
+ADD ./cache.local/build.yaml /apps/target/
 
 ####
 FROM alpine:3
@@ -87,7 +88,6 @@ WORKDIR /apps
 RUN cp /etc/supervisord.conf /etc/supervisord.conf.bk
 
 COPY --from=builder /apps/target/ /apps/target/
-ADD ./cache.local/build.yaml /apps/target/
 ADD ./deploy/supervisord.conf /etc/
 
 # socks5_ssh port
