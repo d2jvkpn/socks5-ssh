@@ -15,7 +15,7 @@ services:
     container_name: socks5-vpn
     volumes:
     - ./configs/:/apps/configs:ro
-    - ./data/site/:/apps/site
+    - ./data/site:/apps/data/site
     - ./logs/:/apps/logs
     environment: { TZ: Asia/Shanghai }
     working_dir: /apps
