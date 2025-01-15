@@ -1,6 +1,5 @@
-#!/usr/bin/env bash
-set -eu -o pipefail # -x
-_wd=$(pwd); _path=$(dirname $0 | xargs -i readlink -f {})
+#!/bin/bash
+set -eu -o pipefail; _wd=$(pwd); _path=$(dirname $0)
 
 function show_help() {
     >&2 echo -e "Usage $(basename $0):\n     socks5_ssh.sh <remote_host> [127.0.0.1:1081]"
