@@ -86,7 +86,6 @@ RUN apk --no-cache update && \
     # installed: traceroute
     # alternatives: gcompat nmap expect ansible sshpass
 
-
 RUN mkdir -p /apps/target
 WORKDIR /apps
 

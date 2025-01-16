@@ -51,7 +51,7 @@ supervisor_vpn: |
     stderr_logfile=logs/socks5_server.error
 
     [program:file_server]
-    command=target/main file_server --addr=:1099 --mount=./site:/site --mount=./logs:/logs
+    command=target/main file_server --addr=:1099 --mount=./data/site:/site --mount=./logs:/logs
     autostart=true
     autorestart=true
     stdout_logfile=logs/file_server.log
