@@ -78,9 +78,12 @@ RUN if [ "$region" = "cn" ]; then \
 
 RUN apk --no-cache update && \
   apk --no-cache upgrade && \
-  apk --no-cache add tzdata coreutils curl bash openssh supervisor iproute2 \
-  bind-tools traceroute openssl stunnel openvpn
-# gcompat nmap expect ansible sshpass
+  apk --no-cache add tzdata coreutils supervisor bash \
+  openssh openvpn openssl \
+  iproute2 bind-tools stunnel curl
+  # installed: traceroute
+  # alternatives: gcompat nmap expect ansible sshpass
+
 
 RUN mkdir -p /apps/target
 WORKDIR /apps
