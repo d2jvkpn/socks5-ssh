@@ -43,7 +43,7 @@ func main() {
 	command.AddCmd(
 		"config", "show config(socks5_ssh, ssh_config, supervisor_vpn, supervisor_ssh)",
 		func(args []string) {
-			errMsg := "Subcommand is required: " +
+			const errMsg = "Subcommand is required: " +
 				"socks5_ssh | ssh_config | supervisor_vpn | supervisor_ssh\n"
 
 			if len(args) == 0 {
@@ -65,7 +65,7 @@ func main() {
 	command.AddCmd(
 		"script", "show script(pac, ssh, vpn)",
 		func(args []string) {
-			errMsg := "Subcommand is required: pac | ssh | vpn\n"
+			const errMsg = "Subcommand is required: pac | ssh | vpn\n"
 
 			if len(args) == 0 {
 				fmt.Fprintf(os.Stderr, errMsg)
