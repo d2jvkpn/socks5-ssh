@@ -78,15 +78,22 @@ ssh_config: |
     # path: configs/ssh.conf
 
     Host remote_host
-        # ProxyJump host01,host02
-        # ProxyCommand  nc -X 5 -x 127.0.0.1:1090 %h
+        #ProxyJump host01,host02
+        #ProxyCommand  nc -X 5 -x 127.0.0.1:1090 %h
+
         HostName 127.0.0.1
-        User account
-        Port 22
-        IdentityFile configs/account.ssh-ed25519 # ~/.ssh/id_rsa
+        User     account
+        Port     22
+        IdentityFile       configs/account.ssh-ed25519 # ~/.ssh/id_rsa
         UserKnownHostsFile configs/ssh-known_hosts # ~/.ssh/known_hosts
-        LogLevel    INFO
-        Compression yes
-        ServerAliveInterval 5
-        ServerAliveCountMax 3
-        ExitOnForwardFailure yes
+
+        LogLevel              INFO
+        Compression           yes
+        TCPKeepAlive          yes
+        ServerAliveInterval   5
+        ServerAliveCountMax   3
+        ExitOnForwardFailure  yes
+
+        #RemoteCommand cd /path/to/project && bash
+        #RemoteCommand HISTFILE='' bash --login
+        #RequestTTY yes

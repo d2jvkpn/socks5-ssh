@@ -39,17 +39,24 @@ fi
 exit 0
 cat /path/to/ssh.conf <<EOF
 Host remote_host
-	#ProxyJump another_host
-	HostName 127.0.0.1
-	User account
-	Port 22
+	#ProxyJump    host01, host02
+	ProxyCommand  nc -X 5 -x 127.0.0.1:1090 %h %p
+
+	HostName  127.0.0.1
+	User      account
+	Port      22
 	IdentityFile ~/.ssh/id_rsa
 	UserKnownHostsFile ~/.ssh/known_hosts
-	Compression yes
-	LogLevel INFO
-	ServerAliveInterval 5
-	ServerAliveCountMax 3
-	ExitOnForwardFailure yes
+
+	Compression           yes
+	LogLevel              INFO
+	TCPKeepAlive          yes
+	ServerAliveInterval   5
+	ServerAliveCountMax   3
+	ExitOnForwardFailure  yes
+	#RemoteCommand  cd /path/to/project && bash
+	#RemoteCommand  HISTFILE='' bash --login
+	#RequestTTY     yes
 EOF
 
 ssh -NC -F /path/to/ssh.conf -D $address $remote_host
