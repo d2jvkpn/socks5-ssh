@@ -106,3 +106,11 @@ firefox -p proxy
 3. ~~vpn~~
 4. wireguard: apk add wireguard-tools, --cap-add=NET_ADMIN, --cap-add=SYS_MODULE
 3. stunnel
+
+#### C06. Commadlines
+```
+apk add --no-cache socat
+socat TCP-LISTEN:8080,fork TCP:localhost:80
+
+while true; do nc -l -p 8080 -c 'nc localhost 80'; done
+```

@@ -50,6 +50,13 @@ supervisor_vpn: |
     stdout_logfile=logs/socks5_server.log
     stderr_logfile=logs/socks5_server.error
 
+    [program:socat_tcp-8000]
+    command=socat TCP-LISTEN:8000,fork TCP:192.168.255.1:8000
+    autostart=true
+    autorestart=true
+    stdout_logfile=logs/socat_tcp-8000.log
+    stderr_logfile=logs/socat_tcp-8000.error
+
     [program:file_server]
     command=target/main file_server --addr=:1099 --mount=./data/site:/site --mount=./logs:/logs
     autostart=true
