@@ -1,6 +1,5 @@
 #!/bin/bash
-set -eu -o pipefail # -x
-_wd=$(pwd); _path=$(dirname $0 | xargs -i readlink -f {})
+set -eu -o pipefail; _wd=$(pwd); _path=$(dirname $0)
 
 command -v docker > /dev/null
 command -v git > /dev/null
@@ -17,6 +16,10 @@ image_name=$(yq .image_name project.yaml)
 
 [[ "${app_name}${app_version}${image_name}" == *"null"* ]] &&
   { >&2 echo '!!! '"args are unset in project.yaml"; exit 1; }
+
+if [[ "$image_name" != *"/"* ]]; then
+    image_name=local/$image_name
+fi
 
 image_tag=${git_branch}-${app_version}
 image_tag=${DOCKER_Tag:-$image_tag}
