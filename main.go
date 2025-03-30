@@ -18,8 +18,8 @@ var (
 	//go:embed deploy/compose.socks5-ssh.yaml
 	_ComposeSSH []byte
 
-	//go:embed deploy/compose.socks5-vpn.yaml
-	_ComposeVPN []byte
+	//go:embed deploy/compose.socks5-openvpn.yaml
+	_ComposeOpenVPN []byte
 
 	//go:embed deploy/proxy.pac
 	_ProxyPac []byte
@@ -78,8 +78,8 @@ func main() {
 				fmt.Printf("%s\n", _ProxyPac)
 			case "ssh":
 				fmt.Printf("%s\n", _ComposeSSH)
-			case "vpn":
-				fmt.Printf("%s\n", _ComposeVPN)
+			case "openvpn":
+				fmt.Printf("%s\n", _ComposeOpenVPN)
 			default:
 				fmt.Fprintf(os.Stderr, errMsg)
 				os.Exit(1)
