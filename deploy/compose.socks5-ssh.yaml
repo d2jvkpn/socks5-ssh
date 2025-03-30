@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   socks5_ssh:
     image: ${IMAGE_Name}:${IMAGE_Tag}
