@@ -32,7 +32,7 @@ COPY ./pkg ./pkg
 COPY ./proto ./proto
 COPY ./bin ./bin
 COPY ./deploy ./deploy
-ADD ./bin/socks5_ssh.sh /apps/target/
+ADD ./bin/ssh-socks5.sh /apps/target/
 
 COPY ./cache.local ./cache.local
 
@@ -108,5 +108,5 @@ EXPOSE 1099
 VOLUME ["/apps/configs", "/apps/data", "/apps/logs"]
 
 CMD [./target/main, ssh, -config=configs/prod.yaml, -addr=:1080]
-# CMD [config=configs/ssh.conf, ./target/socks5_ssh.sh, remote_host, :1080]
+# CMD [config=configs/ssh.conf, ./target/ssh-socks5.sh, remote_host, :1080]
 # CMD [supervisord, -l, /apps/logs/supervisord.log, -c, /etc/supervisord.conf]

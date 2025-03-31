@@ -36,8 +36,8 @@ server:
 	make build
 	./target/main server -addr=127.0.0.1:1091
 
-socks5_proxy:
-	config=configs/ssh.conf ./bin/socks5_ssh.sh remote_host 127.0.0.1:1081
+ssh-socks5:
+	config=configs/ssh.conf ./bin/ssh-socks5.sh remote_host 127.0.0.1:1080
 
 noauth:
 	make build

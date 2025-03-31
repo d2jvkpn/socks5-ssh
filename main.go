@@ -41,10 +41,10 @@ func main() {
 	command.Project = project
 
 	command.AddCmd(
-		"config", "show config(socks5_ssh, ssh_config, supervisor_vpn, supervisor_ssh)",
+		"config", "show config(socks5_ssh, ssh_config, supervisor_openvpn, supervisor_ssh)",
 		func(args []string) {
 			const errMsg = "Subcommand is required: " +
-				"socks5_ssh | ssh_config | supervisor_vpn | supervisor_ssh\n"
+				"socks5_ssh | ssh_config | supervisor_openvpn | supervisor_ssh\n"
 
 			if len(args) == 0 {
 				fmt.Fprintf(os.Stderr, errMsg)
@@ -53,7 +53,7 @@ func main() {
 			}
 
 			switch args[0] {
-			case "socks5_ssh", "ssh_config", "supervisor_vpn", "supervisor_ssh":
+			case "socks5_ssh", "ssh_config", "supervisor_openvpn", "supervisor_ssh":
 				fmt.Printf("%s\n", command.Project.GetString(args[0]))
 			default:
 				fmt.Fprintf(os.Stderr, errMsg)

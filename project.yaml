@@ -25,7 +25,7 @@ socks5_ssh: |
     ssh_private_key: /home/account/.ssh/id_rsa
     ssh_known_hosts: /home/account/.ssh/known_hosts
 
-supervisor_vpn: |
+supervisor_openvpn: |
     # path: /apps/configs/supervisor.ini
 
     # to enable inet_http_server, copy and edit the following lines to /apps/configs/supervisor.ini
@@ -57,6 +57,13 @@ supervisor_vpn: |
     stdout_logfile=logs/socat_tcp-8000.log
     stderr_logfile=logs/socat_tcp-8000.error
 
+    [program:ssh-socks5]
+    command=ssh-socks5.sh=configs/ssh.conf ssh-socks5.sh remote_host :1081
+    autostart=true
+    autorestart=true
+    stdout_logfile=logs/ssh-socks5.log
+    stderr_logfile=logs/ssh-socks5.error
+
     [program:file_server]
     command=target/main file_server --addr=:1099 --mount=./data/site:/site --mount=./logs:/logs
     autostart=true
@@ -87,20 +94,20 @@ ssh_config: |
     Host remote_host
         #ProxyJump host01,host02
         #ProxyCommand  nc -X 5 -x 127.0.0.1:1090 %h
-
         HostName 127.0.0.1
         User     account
         Port     22
         IdentityFile       configs/account.ssh-ed25519 # ~/.ssh/id_rsa
-        UserKnownHostsFile configs/ssh-known_hosts # ~/.ssh/known_hosts
+        UserKnownHostsFile configs/ssh-known_hosts     # ~/.ssh/known_hosts
 
         LogLevel              INFO
         Compression           yes
         TCPKeepAlive          yes
         ServerAliveInterval   5
         ServerAliveCountMax   3
+        ConnectTimeout        10
         ExitOnForwardFailure  yes
 
         #RemoteCommand cd /path/to/project && bash
         #RemoteCommand HISTFILE='' bash --login
-        #RequestTTY yes
+        #RequestTTY    yes

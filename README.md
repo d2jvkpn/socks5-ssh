@@ -63,7 +63,7 @@ make release
 make image-dev
 ```
 - create compose.yaml
-see deploy/compose.sh and deploy/compose.template.yaml
+see deploy/compose.sh and deploy/compose.socks5-ssh.yaml
 
 #### C03. Applications
 1. commandlines with socks5 proxying
