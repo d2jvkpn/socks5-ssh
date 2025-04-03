@@ -82,7 +82,8 @@ RUN apk --no-cache update && \
     tzdata coreutils bash \
     supervisor \
     openssh openvpn openssl \
-    iproute2 bind-tools stunnel curl socat traceroute
+    iproute2 bind-tools stunnel curl socat traceroute \
+    iptables wireguard-tools-wg-quick
     # alternatives: gcompat nmap expect ansible sshpass
 
 RUN mkdir -p /apps/target
