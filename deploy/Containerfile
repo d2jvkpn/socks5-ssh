@@ -79,11 +79,9 @@ RUN if [ "$region" = "cn" ]; then \
 RUN apk --no-cache update && \
   apk --no-cache upgrade && \
   apk --no-cache add \
-    tzdata coreutils bash \
-    supervisor \
-    openssh openvpn openssl \
-    iproute2 bind-tools stunnel curl socat traceroute \
-    iptables wireguard-tools-wg-quick
+    tzdata coreutils bash python3 openssl openssh \
+    iproute2 bind-tools stunnel curl traceroute iptables \
+    supervisor socat openvpn wireguard-tools dante-server
     # alternatives: gcompat nmap expect ansible sshpass
 
 RUN mkdir -p /apps/target

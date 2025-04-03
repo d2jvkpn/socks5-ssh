@@ -11,8 +11,10 @@ date: 1970-01-01
 1. install
 ```bash
 sudo apt update
-
 sudo apt install dante-server
+
+apk update
+apk add dante-server
 ```
 
 2. config

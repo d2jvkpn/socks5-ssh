@@ -58,7 +58,8 @@ supervisor_openvpn: |
     stderr_logfile=logs/socat_tcp-8000.error
 
     [program:ssh-socks5]
-    command=ssh-socks5.sh=configs/ssh.conf ssh-socks5.sh remote_host :1081
+    environment=config=configs/ssh.conf
+    command=ssh-socks5.sh remote_host :1080
     autostart=true
     autorestart=true
     stdout_logfile=logs/ssh-socks5.log
