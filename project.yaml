@@ -65,12 +65,20 @@ supervisor_openvpn: |
     stdout_logfile=logs/ssh-socks5.log
     stderr_logfile=logs/ssh-socks5.error
 
-    [program:file_server]
+    [program:file_server] # python3 -m http.server --directory data/site 1099
     command=target/main file_server --addr=:1099 --mount=./data/site:/site --mount=./logs:/logs
     autostart=true
     autorestart=true
     stdout_logfile=logs/file_server.log
     stderr_logfile=logs/file_server.error
+
+    [program:dante-server]
+    command=sockd -f configs/dante-server.conf -N 2
+    autostart=true
+    autorestart=true
+    stdout_logfile=logs/date-server.log
+    stderr_logfile=logs/date-server.error
+
 
 supervisor_ssh: |
     # path: /apps/configs/supervisor.ini
@@ -112,3 +120,18 @@ ssh_config: |
         #RemoteCommand cd /path/to/project && bash
         #RemoteCommand HISTFILE='' bash --login
         #RequestTTY    yes
+
+dante-server: |
+    # path: /apps/configs/dante-server.conf
+
+    logoutput: logs/dante-server.log # syslog
+    user.privileged: root
+    user.unprivileged: nobody
+    internal: 127.0.0.1 port = 1080
+    external: wg0
+
+    socksmethod: none
+    socks pass {
+      from: 0.0.0.0/0 to: 0.0.0.0/0
+      #log: connect disconnect error
+    }
