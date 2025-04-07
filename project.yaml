@@ -122,16 +122,28 @@ ssh_config: |
         #RequestTTY    yes
 
 dante-server: |
-    # path: /apps/configs/dante-server.conf
+    # path: /etc/danted.conf, /apps/configs/dante-server.conf
 
-    logoutput: logs/dante-server.log # syslog
+    logoutput: /var/log/dante-server.log # syslog stdout stderr
     user.privileged: root
     user.unprivileged: nobody
-    internal: 127.0.0.1 port = 1080
-    external: wg0
 
+    internal: eth0 port = 1080
+    external: tun0 # wg0
+
+    clientmethod: none
     socksmethod: none
+
+    client pass {
+      #from: 0.0.0.0/0 to: 0.0.0.0/0 # ipv4
+      #from: ::/0 to: ::/0           # ipv6
+      from: 0/0 to: 0/0
+      log: connect disconnect error
+    }
+
     socks pass {
-      from: 0.0.0.0/0 to: 0.0.0.0/0
-      #log: connect disconnect error
+      #from: 0.0.0.0/0 to: 0.0.0.0/0 # ipv4
+      #from: ::/0 to: ::/0           # ipv6
+      from: 0/0 to: 0/0
+      log: connect disconnect error
     }
