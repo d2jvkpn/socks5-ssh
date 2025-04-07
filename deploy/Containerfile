@@ -80,7 +80,7 @@ RUN apk --no-cache update && \
   apk --no-cache upgrade && \
   apk --no-cache add \
     tzdata coreutils bash python3 openssl vim openssh curl bind-tools \
-    iproute2 stunnel traceroute iptables iptables-persistent \
+    iproute2 stunnel traceroute iptables \
     supervisor socat openvpn wireguard-tools dante-server
     # alternatives: gcompat nmap expect ansible sshpass
 
